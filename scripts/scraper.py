@@ -72,9 +72,32 @@ for name, station_id in stations.items():
 
 driver.quit()
 
-# Save the final synced data
+# --- NEW SORTING LOGIC ---
+def sort_by_price(item):
+    """
+    Helper function to sort prices. 
+    item[0] is the station name, item[1] is the price string.
+    """
+    price_str = item[1]
+    try:
+        # Strip the '$' and convert to a float for mathematical sorting
+        return float(price_str.replace('$', ''))
+    except ValueError:
+        # If it's "Error", "Not Found", or "Price Missing", 
+        # return infinity so it gets pushed to the very bottom of the list.
+        return float('inf')
+
+# Sort the dictionary items using our helper function
+sorted_items = sorted(prices.items(), key=sort_by_price)
+
+# Convert to a list of dictionaries (Highly recommended for KWGT)
+# This will look like: [{"name": "Lukoil", "price": "$3.10"}, {"name": "BJs", "price": "$3.15"}]
+sorted_prices_list = [{"name": name, "price": price} for name, price in sorted_items]
+
+# Save the final sorted data
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
-    json.dump(prices, f)
+    # Use indent=2 to make the JSON file readable if you check it on GitHub
+    json.dump(sorted_prices_list, f, indent=2)
 
-print(f"Final Outcome: {prices}")
+print(f"Final Sorted Outcome: {json.dumps(sorted_prices_list, indent=2)}")
