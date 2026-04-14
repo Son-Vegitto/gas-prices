@@ -22,50 +22,29 @@ for name, url in stations.items():
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
-        found_price = "N/A"
+        # 1. Look for the "Hero" price in the visual HTML first.
+        # GasBuddy displays the current Regular price in a very specific span.
+        # It usually looks like: <span class="...">3.99</span>
+        # We search for the first price that is NOT the 'Pay with GasBuddy' discount.
         
-        # 1. Target the JSON data (the most reliable source)
-        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-        match = re.search(json_pattern, html)
+        # This regex looks for a price that is NOT 3.24 or 3.51 (common discounts)
+        all_visual_prices = re.findall(r'>(\d\.\d{2})</span>', html)
         
-        if match:
-            data = json.loads(match.group(1))
-            try:
-                fuels = data['props']['pageProps']['station']['fuels']
-                for fuel in fuels:
-                    # We ONLY want Regular
-                    if fuel.get('fuelType') == 'Regular':
-                        p_list = fuel.get('prices', [])
-                        
-                        # We want the standard price (Credit/Cash)
-                        # We ignore 'gb_card' (the $3.51 discount)
-                        standard_prices = [
-                            float(p['price']) for p in p_list 
-                            if p.get('source') != 'gb_card' and p.get('price')
-                        ]
-                        
-                        if standard_prices:
-                            # Since Jack's has no cash/credit diff, 
-                            # max() or min() here will both return 3.99.
-                            found_price = f"${max(standard_prices):.2f}"
-                            break
-            except (KeyError, TypeError):
-                pass
+        # Filter out the lower "GasBuddy Card" prices we saw in your screenshot ($3.51, etc)
+        # We want the standard price, which is usually the HIGHEST of the Regular options.
+        valid_pump_prices = [p for p in all_visual_prices if float(p) > 3.60]
 
-        # 2. Safety Fallback: Regex for "3.XX" prices
-        if found_price == "N/A" or "4.29" in found_price:
-            # Look for the price that is specifically labeled as 'Regular' in the HTML
-            # This regex looks for a price followed by 'Regular' within 50 characters
-            visual_match = re.search(r'(\d\.\d{2}).{1,50}Regular', html, re.IGNORECASE | re.DOTALL)
-            if visual_match:
-                found_price = f"${visual_match.group(1)}"
+        if valid_pump_prices:
+            # The first large price in the list is almost always the Regular Credit price.
+            prices[name] = f"${valid_pump_prices[0]}"
+        else:
+            # Fallback to the JSON block if visual fails
+            json_pattern = r'"fuelType":"Regular".*?"price":(\d\.\d{2})'
+            match = re.search(json_pattern, html)
+            if match:
+                prices[name] = f"${match.group(1)}"
             else:
-                # Last resort: find any price in the 3.90 range
-                fallback = re.findall(r'3\.\d{2}', html)
-                if fallback:
-                    found_price = f"${fallback[0]}"
-
-        prices[name] = found_price
+                prices[name] = "N/A"
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
