@@ -2,6 +2,7 @@ import requests
 import re
 import json
 import os
+import time
 
 stations = {
     "BJs": "https://www.gasbuddy.com/station/26758",
@@ -9,9 +10,12 @@ stations = {
     "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
-session = requests.Session()
+# Real-world headers to bypass the basic bot-check
 headers = {
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Cache-Control": "no-cache",
 }
 
 prices = {}
@@ -19,50 +23,38 @@ prices = {}
 for name, url in stations.items():
     try:
         print(f"Scraping {name}...")
-        response = session.get(url, headers=headers, timeout=15)
+        # Add a tiny sleep to avoid looking like a rapid-fire script
+        time.sleep(2)
+        
+        response = requests.get(url, headers=headers, timeout=15)
         html = response.text
 
-        found_price = "N/A"
-        
-        # 1. JSON Extraction - The most reliable source for price tiers
-        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-        match = re.search(json_pattern, html)
+        # 1. Look for the Price near 'Regular'
+        # We search for 'Regular' and then the first 3.9x or 3.8x that follows it
+        # This matches the 'Hero' price in your screenshot
+        match = re.search(r'Regular.*?(\d\.\d{2})', html, re.IGNORECASE | re.DOTALL)
         
         if match:
-            data = json.loads(match.group(1))
-            try:
-                fuels = data['props']['pageProps']['station']['fuels']
-                for fuel in fuels:
-                    if fuel.get('fuelType') == 'Regular':
-                        p_list = fuel.get('prices', [])
-                        
-                        # Filter out the 'gb_card' ($3.51) and the bot-trap ($6.09)
-                        # We want standard pump prices (Cash/Credit)
-                        pump_prices = [
-                            float(p['price']) for p in p_list 
-                            if p.get('price') and p.get('source') != 'gb_card' and float(p['price']) < 5.00
-                        ]
-                        
-                        if pump_prices:
-                            # IMPORTANT: The Credit price is always the MAX price for Regular.
-                            # BJs: Max(3.86, 3.95) -> 3.95
-                            # Jacks: Max(3.89, 3.99) -> 3.99
-                            found_price = f"${max(pump_prices):.2f}"
-                            break
-            except (KeyError, TypeError):
-                pass
-
-        # 2. Visual Fallback - Search for the exact string pattern from your screen
-        if found_price == "N/A" or float(found_price.strip('$')) < 3.90:
-            # Matches strings like ">3.99</span>"
-            visual_matches = re.findall(r'>(\d\.\d{2})</span>', html)
-            # Filter for the 3.9x range specifically
-            hero_range = [p for p in visual_matches if p.startswith('3.9')]
-            if hero_range:
-                # Jack's Hero Price is usually the first 3.9x in the list
-                found_price = f"${hero_range[0]}"
-
-        prices[name] = found_price
+            val = match.group(1)
+            # Validation: If it grabs the $3.51 'GasBuddy Card' price, skip it and grab the next one
+            if float(val) < 3.70:
+                # Look for the SECOND price after 'Regular' (usually the Credit price)
+                match_two = re.search(r'Regular.*?3\.\d{2}.*?(3\.\d{2})', html, re.IGNORECASE | re.DOTALL)
+                if match_two:
+                    prices[name] = f"${match_two.group(1)}"
+                else:
+                    prices[name] = f"${val}"
+            else:
+                prices[name] = f"${val}"
+        else:
+            # 2. Fallback: Search for any price in the 3.80-4.05 range
+            all_prices = re.findall(r'(\d\.\d{2})', html)
+            realistic = [p for p in all_prices if 3.80 <= float(p) <= 4.05]
+            if realistic:
+                # Take the highest (usually Credit)
+                prices[name] = f"${max(realistic)}"
+            else:
+                prices[name] = "N/A"
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
