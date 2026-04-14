@@ -1,59 +1,66 @@
 import requests
+import re
 import json
 import os
 
-# Station IDs from your URLs
-station_ids = {
-    "BJs": "26758",
-    "Jacks": "33030",
-    "Lukoil": "7072"
+stations = {
+    "BJs": "https://www.gasbuddy.com/station/26758",
+    "Jacks": "https://www.gasbuddy.com/station/33030",
+    "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
-def get_gas_price(station_id):
-    # Using their internal GraphQL-like endpoint logic
-    url = "https://www.gasbuddy.com/assets-v2/api/stations"
-    
-    headers = {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Mobile/15E148 Safari/604.1",
-        "Accept": "application/json",
-        "referer": f"https://www.gasbuddy.com/station/{station_id}"
-    }
-    
+# We use the Googlebot User-Agent. 
+# GasBuddy is terrified of blocking Google because they'd disappear from search results.
+headers = {
+    "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+
+prices = {}
+
+for name, url in stations.items():
     try:
-        # We fetch the station data directly
-        response = requests.get(f"{url}/{station_id}", headers=headers, timeout=20)
-        data = response.json()
+        print(f"Requesting via SEO Proxy for {name}...")
+        response = requests.get(url, headers=headers, timeout=20)
+        html = response.text
+
+        # GasBuddy often sends a simplified 'crawler' version of the site to bots.
+        # We look for the Regular price pattern.
         
-        # We look for 'Regular' in the fuels list
-        fuels = data.get('fuels', [])
-        for fuel in fuels:
-            if fuel.get('fuelType') == 'Regular':
-                prices = fuel.get('prices', [])
-                # Filter out the $6.09 ad and the $3.51 GasBuddy card discount
-                # We want the 'Credit' price which is the highest standard price
-                valid_prices = [
-                    float(p['price']) for p in prices 
-                    if p.get('price') and 3.60 < float(p['price']) < 5.00
-                ]
-                
-                if valid_prices:
-                    # max() ensures we get $3.99 (Credit) instead of $3.89 (Cash)
-                    return f"${max(valid_prices):.2f}"
+        # 1. Search for JSON-LD (Schema.org data used by Google)
+        # This is almost always present for SEO and contains the 'price'
+        json_ld = re.findall(r'"price":\s?"(\d\.\d{2})"', html)
         
-        return "N/A"
+        if json_ld:
+            # The first price in the SEO data is the Regular Pump Price
+            # We filter out the $6.09 trap manually just in case
+            valid = [p for p in json_ld if float(p) < 5.00 and float(p) > 3.00]
+            if valid:
+                # We want the 'Credit' price. In your Jacks example, that's $3.99
+                # If there are two prices (Cash/Credit), take the higher one.
+                prices[name] = f"${max(valid)}"
+                continue
+
+        # 2. Fallback: Search the text specifically for Regular
+        match = re.search(r'Regular.*?(\d\.\d{2})', html, re.IGNORECASE | re.DOTALL)
+        if match:
+            prices[name] = f"${match.group(1)}"
+        else:
+            # 3. Final Fallback: Grab the most frequent 3.xx price
+            all_prices = re.findall(r'(\d\.\d{2})', html)
+            realistic = [p for p in all_prices if 3.80 <= float(p) <= 4.10]
+            if realistic:
+                prices[name] = f"${max(realistic)}"
+            else:
+                prices[name] = "N/A"
+
     except Exception as e:
-        print(f"Error fetching ID {station_id}: {e}")
-        return "Error"
+        print(f"Error at {name}: {e}")
+        prices[name] = "Error"
 
-# Main execution
-final_prices = {}
-for name, sid in station_ids.items():
-    print(f"Polling API for {name}...")
-    final_prices[name] = get_gas_price(sid)
-
-# Save to public folder for your widget
+# Save results
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
-    json.dump(final_prices, f)
+    json.dump(prices, f)
 
-print(f"Final Outcome: {final_prices}")
+print(f"Final Outcome: {prices}")
