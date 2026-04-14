@@ -9,7 +9,6 @@ stations = {
     "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
-# We'll use a very specific desktop user agent to look like a human browsing on Chrome
 scraper = cloudscraper.create_scraper(
     browser={
         'browser': 'chrome',
@@ -26,29 +25,23 @@ for name, url in stations.items():
         response = scraper.get(url, timeout=15)
         html = response.text
 
-        # GasBuddy's price display usually looks like this in the raw HTML:
-        # <span class="...">3.95</span>...<span>Regular</span>
-        # We'll search for a price pattern that is followed by 'Regular' within 200 characters
+        # 1. Try to find all instances of "price":3.XX
+        # This is usually the most reliable way to find the actual data
+        price_matches = re.findall(r'"price":(\d\.\d{2})', html)
         
-        # This regex looks for: 
-        # 1. A price ($X.XX)
-        # 2. A bunch of junk/tags in between (up to 300 characters)
-        # 3. The word 'Regular'
-        regex_pattern = r'(\d\.\d{2})<.*?Regular'
+        # 2. Filter out common 'fake' or 'metadata' prices
+        # We want prices between $2.00 and $6.00 (standard for 2026)
+        valid_prices = [p for p in price_matches if 2.00 <= float(p) <= 6.00]
         
-        # We use re.DOTALL to make sure the dot matches newlines too
-        match = re.search(regex_pattern, html, re.IGNORECASE | re.DOTALL)
-        
-        if match:
-            prices[name] = f"${match.group(1)}"
+        if valid_prices:
+            # Usually the first valid price in the data block is Regular
+            prices[name] = f"${valid_prices[0]}"
         else:
-            # Plan B: Try to find any price that is NOT 6.09 (the ad price)
-            all_prices = re.findall(r'(\d\.\d{2})', html)
-            # Remove common 'ad' prices if they appear
-            filtered_prices = [p for p in all_prices if p not in ["6.09", "0.00"]]
-            
-            if filtered_prices:
-                prices[name] = f"${filtered_prices[0]}"
+            # Fallback: search for the price inside the visual span class
+            # GasBuddy often uses a specific span for the price
+            span_match = re.search(r'>(\d\.\d{2})</span>', html)
+            if span_match:
+                prices[name] = f"${span_match.group(1)}"
             else:
                 prices[name] = "N/A"
                 
