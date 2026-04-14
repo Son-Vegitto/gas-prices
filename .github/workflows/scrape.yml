@@ -2,7 +2,9 @@ name: Update Gas Prices JSON
 
 on:
   schedule:
-    - cron: '0 */4 * * *' # Runs every 4 hours
+    # This runs at 13:00 and 21:00 UTC every day
+    # Which corresponds to 8:00 AM and 4:00 PM EST
+    - cron: '0 13,21 * * *'
   workflow_dispatch: # Allows you to trigger it manually
 
 jobs:
