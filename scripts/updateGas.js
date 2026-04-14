@@ -1,59 +1,62 @@
 import fs from "node:fs";
 import path from "node:path";
-import { chromium } from "playwright";
 
 const STATION_IDS = ["7072", "33030", "26758"];
 const OUT_FILE = path.join("public", "gas_prices.json");
 
-async function scrapeStation(browser, id) {
-  // Creating a context with a standard desktop User-Agent
-  const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-  });
-  const page = await context.newPage();
+async function getPrice(id) {
+  const query = {
+    operationName: "GetStation",
+    variables: { id: id },
+    query: `query GetStation($id: ID!) {
+      station(id: $id) {
+        name
+        prices {
+          fuelType
+          credit {
+            price
+            postedTime
+          }
+        }
+      }
+    }`
+  };
 
   try {
-    console.log(`Checking Station ${id}...`);
-    
-    // Go to page and wait until the basic HTML is loaded
-    await page.goto(`https://www.gasbuddy.com/station/${id}`, { 
-      waitUntil: 'domcontentloaded', 
-      timeout: 60000 
+    const response = await fetch("https://www.gasbuddy.com/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+      },
+      body: JSON.stringify(query),
     });
 
-    // Wait for ANY element containing a "$" followed by a digit
-    // This bypasses the need for specific class names
-    const priceLocator = page.locator('text=/\$\d+/').first();
-    await priceLocator.waitFor({ timeout: 15000 });
+    const data = await response.json();
+    const station = data.data.station;
+    
+    // Find "regular" fuel type (usually '1' or 'regular')
+    const regularData = station.prices.find(p => p.fuelType === "regular" || p.fuelType === "1");
+    const price = regularData?.credit?.price ? `$${regularData.credit.price}` : "N/A";
 
-    const price = await priceLocator.innerText();
-    const name = await page.locator("h1").first().innerText();
-
-    await context.close();
-    return { id, name: name.trim(), price: price.trim() };
+    return {
+      id,
+      name: station.name,
+      price: price
+    };
   } catch (err) {
-    console.error(`Station ${id} failed: ${err.message}`);
-    // Take a screenshot to the logs folder if you wanted to debug, 
-    // but for now, we'll just return N/A
-    await context.close();
-    return { id, name: "Blocked or Timeout", price: "N/A" };
+    console.error(`Error fetching station ${id}:`, err);
+    return { id, name: "API Error", price: "N/A" };
   }
 }
 
 async function main() {
-  const browser = await chromium.launch({ 
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
-
   const results = [];
   for (const id of STATION_IDS) {
-    results.push(await scrapeStation(browser, id));
-    // Wait 5 seconds between stations to look more human
-    await new Promise(r => setTimeout(r, 5000));
+    const data = await getPrice(id);
+    results.push(data);
+    await new Promise(r => setTimeout(r, 1000));
   }
-
-  await browser.close();
 
   const payload = {
     updated: new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
@@ -62,7 +65,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Final Output:", payload);
+  console.log("Results:", payload);
 }
 
 main();
