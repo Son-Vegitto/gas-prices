@@ -8,48 +8,67 @@ stations = {
     "Lukoil": "7072"
 }
 
-# We need specific headers to look exactly like a real browser
 scraper = cloudscraper.create_scraper()
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-    "Accept": "application/json",
-    "Referer": "https://www.gasbuddy.com/"
+
+# This is the exact query the GasBuddy website sends
+query = """
+query GetStationPrices($id: ID!) {
+    station(id: $id) {
+        prices {
+            fuel
+            credit {
+                price
+            }
+            cash {
+                price
+            }
+        }
+    }
 }
+"""
 
 prices = {}
 
 for name, s_id in stations.items():
     try:
         print(f"Fetching {name}...")
-        # This is the direct API endpoint for station prices
-        api_url = f"https://www.gasbuddy.com/assets-v2/api/stations/{s_id}"
         
-        response = scraper.get(api_url, headers=headers, timeout=10)
+        response = scraper.post(
+            "https://www.gasbuddy.com/graphql",
+            json={
+                "operationName": "GetStationPrices",
+                "variables": {"id": s_id},
+                "query": query
+            },
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                "Content-Type": "application/json"
+            }
+        )
         
         if response.status_code == 200:
             data = response.json()
-            # The API returns a 'fuels' list
-            fuels = data.get('fuels', [])
+            station_prices = data.get('data', {}).get('station', {}).get('prices', [])
             
             found_price = "N/A"
-            for fuel in fuels:
-                # GasBuddy API uses 'Regular' or 1 for regular gas
-                if fuel.get('fuelType') == 'Regular' or fuel.get('fuelTypeId') == 1:
-                    # Check for credit price, then cash price
-                    val = fuel.get('creditPrice') or fuel.get('cashPrice')
+            for p in station_prices:
+                # We want regular gas
+                if p.get('fuel') == 'regular':
+                    # Check credit first, then cash
+                    val = p.get('credit', {}).get('price') or p.get('cash', {}).get('price')
                     if val:
                         found_price = f"${val}"
                     break
             prices[name] = found_price
         else:
-            print(f"API Error {response.status_code} for {name}")
+            print(f"Error {response.status_code} for {name}")
             prices[name] = "N/A"
             
     except Exception as e:
         print(f"Failed {name}: {e}")
         prices[name] = "Error"
 
-# Save the file
+# Save the results
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
