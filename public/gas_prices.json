@@ -1,19 +1,19 @@
 {
-  "updated": "4/13/2026, 9:38:03 PM",
+  "updated": "4/13/2026, 9:43:26 PM",
   "stations": [
     {
       "id": "7072",
-      "name": "Lukoil Souderton PA",
+      "name": "Lukoil (Souderton)",
       "price": "N/A"
     },
     {
       "id": "33030",
-      "name": "Jacks Food Mart Bethlehem PA",
+      "name": "Jack's (Bethlehem)",
       "price": "N/A"
     },
     {
       "id": "26758",
-      "name": "BJs Allentown PA",
+      "name": "BJ's (Allentown)",
       "price": "N/A"
     }
   ]
