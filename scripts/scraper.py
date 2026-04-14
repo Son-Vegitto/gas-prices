@@ -1,60 +1,51 @@
-import os
+import cloudscraper
+import re
 import json
-import asyncio
-import inspect
-from py_gasbuddy import GasBuddy
+import os
 
-async def main():
-    stations_to_track = {
-        "BJs": "26758",
-        "Jacks": "33030",
-        "Lukoil": "7072"
+stations = {
+    "BJs": "https://www.gasbuddy.com/station/26758",
+    "Jacks": "https://www.gasbuddy.com/station/33030",
+    "Lukoil": "https://www.gasbuddy.com/station/7072"
+}
+
+# Create scraper with a real browser fingerprint
+scraper = cloudscraper.create_scraper(
+    browser={
+        'browser': 'chrome',
+        'platform': 'windows',
+        'desktop': True
     }
+)
 
-    gb = GasBuddy()
-    prices = {}
+prices = {}
 
-    # 1. Inspect the library to see what the argument name actually is
-    # This prevents the "unexpected keyword argument" error
-    sig = inspect.signature(gb.price_lookup)
-    arg_name = list(sig.parameters.keys())[0] 
-    print(f"Library is expecting argument name: {arg_name}")
-
-    for name, s_id in stations_to_track.items():
-        try:
-            print(f"Fetching {name} (ID: {s_id})...")
-            
-            # 2. Call the function using the dynamically discovered argument name
-            kwargs = {arg_name: s_id}
-            station_data = await gb.price_lookup(**kwargs)
-            
-            regular_price = "N/A"
-            
-            if station_data:
-                # Some versions return a list, some return a single object
-                items = station_data if isinstance(station_data, list) else [station_data]
+for name, url in stations.items():
+    try:
+        print(f"Scraping {name}...")
+        response = scraper.get(url, timeout=15)
+        
+        # Look for the price pattern (e.g., 3.45) followed by the regular gas label
+        # This regex looks for the dollar amount near the text "Regular"
+        match = re.search(r'(\d\.\d{2})</span>[^>]*>Regular', response.text)
+        
+        if match:
+            prices[name] = f"${match.group(1)}"
+        else:
+            # Fallback: Look for the JSON data blob we tried earlier
+            match_json = re.search(r'"fuelType":"Regular","prices":\[{"price":(\d\.\d{2})', response.text)
+            if match_json:
+                prices[name] = f"${match_json.group(1)}"
+            else:
+                prices[name] = "N/A"
                 
-                for p in items:
-                    # Check for 'regular' or 'unleaded'
-                    fuel_type = getattr(p, 'type', getattr(p, 'fuel_type', '')).lower()
-                    if fuel_type in ["regular", "unleaded"]:
-                        price_val = getattr(p, 'price', getattr(p, 'credit_price', None))
-                        if price_val:
-                            regular_price = f"${price_val}"
-                            break
-            
-            prices[name] = regular_price
-            
-        except Exception as e:
-            print(f"Error fetching {name}: {str(e)}")
-            prices[name] = "Error"
+    except Exception as e:
+        print(f"Error at {name}: {e}")
+        prices[name] = "Error"
 
-    # Save to public/gas_prices.json
-    os.makedirs('public', exist_ok=True)
-    with open('public/gas_prices.json', 'w') as f:
-        json.dump(prices, f)
-    
-    print(f"Final Data Saved: {prices}")
+# Save results
+os.makedirs('public', exist_ok=True)
+with open('public/gas_prices.json', 'w') as f:
+    json.dump(prices, f)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+print(f"Success: {prices}")
