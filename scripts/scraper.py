@@ -36,5 +36,5 @@ for name, url in stations.items():
         prices[name] = "Error"
 
 # Save to a simple JSON file
-with open('prices.json', 'w') as f:
+with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
