@@ -6,38 +6,57 @@ const STATION_IDS = ["7072", "33030", "26758"];
 const OUT_FILE = path.join("public", "gas_prices.json");
 
 async function scrapeStation(browser, id) {
-  const page = await browser.newPage();
-  // Mimic a real user
-  await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US,en;q=0.9' });
+  // Use a mobile-like user agent to often bypass heavy desktop bot checks
+  const context = await browser.newContext({
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1'
+  });
+  
+  const page = await context.newPage();
   
   try {
-    console.log(`Navigating to Station ${id}...`);
-    await page.goto(`https://www.gasbuddy.com/station/${id}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    console.log(`Checking Station ${id}...`);
+    // Navigate and wait for the network to be somewhat quiet
+    await page.goto(`https://www.gasbuddy.com/station/${id}`, { 
+      waitUntil: 'networkidle', 
+      timeout: 60000 
+    });
 
-    // Wait for the price element to appear (using a generic selector for "price")
-    const priceSelector = "[class*='PriceDisplay-module__price']";
-    await page.waitForSelector(priceSelector, { timeout: 10000 });
+    // Let's grab the Name first
+    const name = await page.locator("h1").first().innerText({ timeout: 10000 });
 
-    const price = await page.locator(priceSelector).first().innerText();
-    const name = await page.locator("h1").first().innerText();
+    // New Strategy: Look for the text "$" followed by numbers anywhere in the main area
+    const priceText = await page.evaluate(() => {
+      // Find all elements that have a "$" in them
+      const elements = Array.from(document.querySelectorAll('span, div, p'));
+      const priceElement = elements.find(el => /^\$\d+\.\d{2}/.test(el.innerText.trim()));
+      return priceElement ? priceElement.innerText.trim() : null;
+    });
 
-    await page.close();
-    return { id, name: name.trim(), price: price.trim() };
+    await context.close();
+    return { 
+      id, 
+      name: name.trim() || `Station ${id}`, 
+      price: priceText || "N/A" 
+    };
+
   } catch (err) {
-    console.error(`Failed to scrape ${id}: ${err.message}`);
-    await page.close();
-    return { id, name: "Error", price: "N/A" };
+    console.error(`Error on ${id}:`, err.message);
+    await context.close();
+    return { id, name: "Blocked/Error", price: "N/A" };
   }
 }
 
 async function main() {
-  const browser = await chromium.launch({ headless: true });
-  const results = [];
+  // Launch with essential flags for GitHub Actions
+  const browser = await chromium.launch({ 
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+  });
 
+  const results = [];
   for (const id of STATION_IDS) {
     results.push(await scrapeStation(browser, id));
-    // Brief pause
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 5000)); // 5s delay to be safe
   }
 
   await browser.close();
@@ -47,9 +66,9 @@ async function main() {
     stations: results
   };
 
-  if (!fs.existsSync("public")) fs.mkdirSync("public");
+  if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Success:", payload);
+  console.log("Final Result:", JSON.stringify(payload, null, 2));
 }
 
 main();
