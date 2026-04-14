@@ -1,67 +1,34 @@
 import fs from "node:fs";
 import path from "node:path";
-import { load } from "cheerio";
 
-const STATIONS = [
-  { 
-    id: "7072", 
-    url: "https://www.getupside.com/locations/pa/souderton/", 
-    matchers: ["681", "Broad", "Lukoil"], 
-    name: "Lukoil (Souderton)" 
-  },
-  { 
-    id: "33030", 
-    url: "https://www.getupside.com/locations/pa/bethlehem/", 
-    matchers: ["3010", "Schoenersville", "Jack"], 
-    name: "Jack's Food Mart (Bethlehem)" 
-  },
-  { 
-    id: "26758", 
-    url: "https://www.getupside.com/locations/pa/allentown/", 
-    matchers: ["1785", "Airport", "BJ"], 
-    name: "BJ's (Allentown)" 
-  }
-];
-
+const API_KEY = process.env.WEB_SCRAPING_AI_KEY; 
 const OUT_FILE = path.join("public", "gas_prices.json");
 
-async function fetchFromUpside(station) {
-  try {
-    console.log(`Checking ${station.name}...`);
-    const res = await fetch(station.url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
-      }
-    });
+const STATIONS = [
+  { id: "7072", url: "https://www.gasbuddy.com/station/7072", name: "Lukoil (Souderton)" },
+  { id: "33030", url: "https://www.gasbuddy.com/station/33030", name: "Jack's Food Mart (Bethlehem)" },
+  { id: "26758", url: "https://www.gasbuddy.com/station/26758", name: "BJ's (Allentown)" }
+];
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+async function fetchWithAPI(station) {
+  try {
+    console.log(`Fetching ${station.name}...`);
+    
+    // WebScraping.ai handles the headers and proxies for us
+    const apiUrl = `https://api.webscraping.ai/html?api_key=${API_KEY}&url=${encodeURIComponent(station.url)}&proxy_type=residential`;
+    
+    const res = await fetch(apiUrl);
+    if (!res.ok) throw new Error(`API Error: ${res.status}`);
     
     const html = await res.text();
-    const $ = load(html);
-    let foundPrice = "N/A";
+    
+    // Search the HTML for the price pattern
+    const priceMatch = html.match(/\$(\d\.\d{2})/) || html.match(/\"price\":\"(\d\.\d{2})\"/);
+    const price = priceMatch ? `$${priceMatch[1]}` : "N/A";
 
-    // We search through every <li> and <div> that looks like a station listing
-    $("li, div, tr").each((_, el) => {
-        const text = $(el).text().trim();
-        
-        // If the block contains any of our key markers (Address number or Name)
-        const isMatch = station.matchers.some(m => text.toLowerCase().includes(m.toLowerCase()));
-        
-        if (isMatch) {
-            // Regex for price: Look for a number like 2.85 or 3.10
-            // We look for digits then a dot then two digits
-            const priceMatch = text.match(/\d\.\d{2}/);
-            if (priceMatch) {
-                foundPrice = `$${priceMatch[0]}`;
-                return false; // Break the loop
-            }
-        }
-    });
-
-    return { id: station.id, name: station.name, price: foundPrice };
-
+    return { id: station.id, name: station.name, price };
   } catch (err) {
-    console.error(`Upside failed for ${station.name}:`, err.message);
+    console.error(`Error on ${station.name}:`, err.message);
     return { id: station.id, name: station.name, price: "N/A" };
   }
 }
@@ -69,8 +36,9 @@ async function fetchFromUpside(station) {
 async function main() {
   const results = [];
   for (const s of STATIONS) {
-    results.push(await fetchFromUpside(s));
-    await new Promise(r => setTimeout(r, 2000));
+    results.push(await fetchWithAPI(s));
+    // Brief pause between requests
+    await new Promise(r => setTimeout(r, 1000));
   }
 
   const payload = {
@@ -80,7 +48,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Final Output:", JSON.stringify(payload, null, 2));
+  console.log("Updated data:", JSON.stringify(payload, null, 2));
 }
 
 main();
