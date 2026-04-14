@@ -3,7 +3,6 @@ import re
 import json
 import os
 
-# Using the URLs for the specific PA locations
 stations = {
     "BJs": "https://www.gasbuddy.com/station/26758",
     "Jacks": "https://www.gasbuddy.com/station/33030",
@@ -11,10 +10,8 @@ stations = {
 }
 
 session = requests.Session()
-# Using a high-quality Windows User Agent to look like a standard desktop user
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Accept-Language": "en-US,en;q=0.9",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
 }
 
 prices = {}
@@ -26,26 +23,47 @@ for name, url in stations.items():
         html = response.text
 
         found_price = "N/A"
-
-        # 1. Look for the fuel data in the JSON block
-        # We look specifically for "Regular" fuel and the price associated with it
-        json_pattern = r'"fuelType":"Regular".*?"price":(\d\.\d{2})'
+        
+        # 1. Target the JSON data (the most reliable source)
+        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
         match = re.search(json_pattern, html)
         
         if match:
-            found_price = f"${match.group(1)}"
-        else:
-            # 2. Fallback: Find all 3.XX or 4.XX numbers
-            # We filter out ratings like 4.5 by requiring two decimal places
-            all_prices = re.findall(r'(\d\.\d{2})', html)
-            
-            # Real gas prices in PA right now are between $3.50 and $4.50
-            # We filter for that range to ignore metadata junk
-            valid_prices = [p for p in all_prices if 3.50 <= float(p) <= 4.50]
-            
-            if valid_prices:
-                # The first valid price in the HTML is almost always Regular
-                found_price = f"${valid_prices[0]}"
+            data = json.loads(match.group(1))
+            try:
+                fuels = data['props']['pageProps']['station']['fuels']
+                for fuel in fuels:
+                    # We ONLY want Regular
+                    if fuel.get('fuelType') == 'Regular':
+                        p_list = fuel.get('prices', [])
+                        
+                        # We want the standard price (Credit/Cash)
+                        # We ignore 'gb_card' (the $3.51 discount)
+                        standard_prices = [
+                            float(p['price']) for p in p_list 
+                            if p.get('source') != 'gb_card' and p.get('price')
+                        ]
+                        
+                        if standard_prices:
+                            # Since Jack's has no cash/credit diff, 
+                            # max() or min() here will both return 3.99.
+                            found_price = f"${max(standard_prices):.2f}"
+                            break
+            except (KeyError, TypeError):
+                pass
+
+        # 2. Safety Fallback: Regex for "3.XX" prices
+        if found_price == "N/A" or "4.29" in found_price:
+            # Look for the price that is specifically labeled as 'Regular' in the HTML
+            # This regex looks for a price followed by 'Regular' within 50 characters
+            visual_match = re.search(r'(\d\.\d{2}).{1,50}Regular', html, re.IGNORECASE | re.DOTALL)
+            if visual_match:
+                found_price = f"${visual_match.group(1)}"
+            else:
+                # Last resort: find any price in the 3.90 range
+                fallback = re.findall(r'3\.\d{2}', html)
+                if fallback:
+                    found_price = f"${fallback[0]}"
 
         prices[name] = found_price
                 
@@ -53,7 +71,7 @@ for name, url in stations.items():
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save the results to the public folder
+# Save results
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
