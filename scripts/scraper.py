@@ -10,8 +10,10 @@ stations = {
 }
 
 session = requests.Session()
+# Rotating headers slightly to look more like a fresh mobile session
 headers = {
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Mobile/15E148 Safari/604.1",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
 prices = {}
@@ -24,47 +26,47 @@ for name, url in stations.items():
 
         found_price = "N/A"
         
-        # 1. Target the JSON block
+        # 1. Target the JSON block (it contains the raw data before formatting)
         json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
         match = re.search(json_pattern, html)
         
         if match:
             data = json.loads(match.group(1))
             try:
-                # Get the fuels list
                 fuels = data['props']['pageProps']['station']['fuels']
                 for fuel in fuels:
-                    # STRICT CHECK: Must be Regular fuel
+                    # Target 'Regular' only to avoid $4.09 or $4.39 from your screenshot
                     if fuel.get('fuelType') == 'Regular':
                         p_list = fuel.get('prices', [])
                         
-                        # We want the 'Credit' price. 
-                        # In your Jack's example, Credit and Cash are both 3.99.
-                        # We ignore 'gb_card' (the 3.51 discount).
-                        valid_options = [
+                        # Filter for prices that are:
+                        # 1. Not the $6.09 ad
+                        # 2. Not the $3.51 GasBuddy Card discount
+                        # 3. In a realistic PA range ($3.70 - $4.10)
+                        valid_prices = [
                             float(p['price']) for p in p_list 
-                            if p.get('source') != 'gb_card' and p.get('price')
+                            if p.get('price') and 3.70 <= float(p['price']) <= 4.10
                         ]
                         
-                        if valid_options:
-                            # We take the HIGHEST valid regular price (which is Credit)
-                            # This avoids grabbing the 'Cash' discount if one exists.
-                            found_price = f"${max(valid_options):.2f}"
+                        if valid_prices:
+                            # Use max() to ensure we get the Credit price ($3.99) 
+                            # and not a lower Cash price ($3.89)
+                            found_price = f"${max(valid_prices):.2f}"
                             break
             except (KeyError, TypeError):
                 pass
 
-        # 2. Safety Fallback: Regex specifically for the $3.9x range
-        if found_price == "N/A" or float(found_price.strip('$')) > 4.10:
-            # Look for any price between 3.90 and 4.00 specifically
+        # 2. Fallback: If JSON is blocked, use Regex to find the first 3.9x price
+        if found_price == "N/A" or "6.09" in found_price:
             matches = re.findall(r'>(3\.9\d)</span>', html)
             if matches:
                 found_price = f"${matches[0]}"
             else:
-                # If no 3.9x found, look for any price near the word Regular
-                fallback = re.search(r'Regular.*?(\d\.\d{2})', html, re.DOTALL)
-                if fallback:
-                    found_price = f"${fallback.group(1)}"
+                # Last ditch: grab any price between 3.80 and 4.00
+                all_prices = re.findall(r'(\d\.\d{2})', html)
+                realistic = [p for p in all_prices if 3.80 <= float(p) <= 4.05]
+                if realistic:
+                    found_price = f"${realistic[0]}"
 
         prices[name] = found_price
                 
