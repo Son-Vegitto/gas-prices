@@ -22,7 +22,6 @@ for name, url in stations.items():
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
-        # 1. Extract the raw JSON data blob
         json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
         match = re.search(json_pattern, html)
         
@@ -31,30 +30,34 @@ for name, url in stations.items():
         if match:
             data = json.loads(match.group(1))
             try:
-                # Digging into the actual station data structure
                 fuels = data['props']['pageProps']['station']['fuels']
                 for fuel in fuels:
-                    # We only want Regular
                     if fuel.get('fuelType') == 'Regular':
-                        # Get the 'prices' list
                         p_list = fuel.get('prices', [])
-                        if p_list:
-                            # Use the real price, not the 'pay with card' price
-                            val = p_list[0].get('price')
-                            if val:
-                                found_price = f"${val}"
-                                break
+                        # We want the price that is NOT the 'Pay with GasBuddy' price
+                        # Often the standard price has a specific flag or is just the largest
+                        valid_pump_prices = []
+                        for p_entry in p_list:
+                            p_val = p_entry.get('price')
+                            # Ignore specific discounted prices if they are marked
+                            # Or if they are significantly lower than others
+                            if p_val:
+                                valid_pump_prices.append(float(p_val))
+                        
+                        if valid_pump_prices:
+                            # Standard pump price is almost always the HIGHEST of the regular options
+                            # (Discounted card prices are lower)
+                            found_price = f"${max(valid_pump_prices)}"
+                            break
             except (KeyError, TypeError):
                 pass
 
-        # 2. Safety Fallback: If JSON is scrambled, use the 'Min Price' rule 
-        # but exclude known decoy numbers like 2.55
-        if found_price == "N/A" or found_price == "$2.55":
+        # Safety Fallback: Use the 'Max Price' rule in the $3.50-$4.50 range
+        if found_price == "N/A":
             all_prices = re.findall(r'(\d\.\d{2})', html)
-            # Filter for realistic NJ prices (between $3.50 and $4.50)
             valid = [float(p) for p in all_prices if 3.50 <= float(p) <= 4.50]
             if valid:
-                found_price = f"${min(valid)}"
+                found_price = f"${max(valid)}"
 
         prices[name] = found_price
                 
