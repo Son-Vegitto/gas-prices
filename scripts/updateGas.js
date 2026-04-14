@@ -26,36 +26,47 @@ async function getPrice(id) {
     const response = await fetch("https://www.gasbuddy.com/graphql", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "accept": "*/*",
+        "content-type": "application/json",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "origin": "https://www.gasbuddy.com",
+        "referer": `https://www.gasbuddy.com/station/${id}`
       },
       body: JSON.stringify(query),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+
     const data = await response.json();
-    const station = data.data.station;
+    const station = data?.data?.station;
     
-    // Find "regular" fuel type (usually '1' or 'regular')
-    const regularData = station.prices.find(p => p.fuelType === "regular" || p.fuelType === "1");
+    if (!station) return { id, name: "Not Found", price: "N/A" };
+
+    // GasBuddy returns prices in an array; we want 'regular'
+    const regularData = station.prices.find(p => p.fuelType === "regular");
     const price = regularData?.credit?.price ? `$${regularData.credit.price}` : "N/A";
 
     return {
       id,
-      name: station.name,
+      name: station.name || `Station ${id}`,
       price: price
     };
   } catch (err) {
-    console.error(`Error fetching station ${id}:`, err);
-    return { id, name: "API Error", price: "N/A" };
+    console.error(`Error on ${id}:`, err.message);
+    return { id, name: "Blocked", price: "N/A" };
   }
 }
 
 async function main() {
   const results = [];
   for (const id of STATION_IDS) {
+    console.log(`Fetching ${id}...`);
     const data = await getPrice(id);
     results.push(data);
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 2000)); // Be gentle
   }
 
   const payload = {
@@ -65,7 +76,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Results:", payload);
+  console.log("Final payload written to disk.");
 }
 
 main();
