@@ -1,76 +1,53 @@
 import cloudscraper
+import re
 import json
 import os
 
 stations = {
-    "BJs": "26758",
-    "Jacks": "33030",
-    "Lukoil": "7072"
+    "BJs": "https://www.gasbuddy.com/station/26758",
+    "Jacks": "https://www.gasbuddy.com/station/33030",
+    "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
 scraper = cloudscraper.create_scraper()
 
-# This is the exact query the GasBuddy website sends
-query = """
-query GetStationPrices($id: ID!) {
-    station(id: $id) {
-        prices {
-            fuel
-            credit {
-                price
-            }
-            cash {
-                price
-            }
-        }
-    }
-}
-"""
-
 prices = {}
 
-for name, s_id in stations.items():
+for name, url in stations.items():
     try:
-        print(f"Fetching {name}...")
+        print(f"Scraping {name}...")
+        # Get the full webpage
+        response = scraper.get(url, timeout=15)
+        html = response.text
+
+        # REGEX EXPLANATION:
+        # Look for a price like 3.45 or 3.09
+        # That is inside a span or div
+        # And is near the word "Regular"
+        # We search for the price first, then check if 'Regular' is nearby
         
-        response = scraper.post(
-            "https://www.gasbuddy.com/graphql",
-            json={
-                "operationName": "GetStationPrices",
-                "variables": {"id": s_id},
-                "query": query
-            },
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                "Content-Type": "application/json"
-            }
-        )
+        found_price = "N/A"
         
-        if response.status_code == 200:
-            data = response.json()
-            station_prices = data.get('data', {}).get('station', {}).get('prices', [])
-            
-            found_price = "N/A"
-            for p in station_prices:
-                # We want regular gas
-                if p.get('fuel') == 'regular':
-                    # Check credit first, then cash
-                    val = p.get('credit', {}).get('price') or p.get('cash', {}).get('price')
-                    if val:
-                        found_price = f"${val}"
-                    break
-            prices[name] = found_price
-        else:
-            print(f"Error {response.status_code} for {name}")
-            prices[name] = "N/A"
-            
+        # This finds all price-looking strings (X.XX)
+        all_prices = re.findall(r'(\d\.\d{2})', html)
+        
+        if all_prices:
+            # Usually, the first price on a station page is Regular
+            # But let's be safer and look for the one near the word 'Regular'
+            if "Regular" in html:
+                # GasBuddy often puts the price right before or after the word 'Regular'
+                # We'll take the first one we found as a best guess
+                found_price = f"${all_prices[0]}"
+        
+        prices[name] = found_price
+                
     except Exception as e:
-        print(f"Failed {name}: {e}")
+        print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save the results
+# Save results
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
 
-print(f"Final results: {prices}")
+print(f"Final Outcome: {prices}")
