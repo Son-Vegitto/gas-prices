@@ -2,11 +2,9 @@ name: Update Gas Prices JSON
 
 on:
   schedule:
-    # Runs every 6 hours (at minute 0 of 00:00, 06:00, 12:00, 18:00)
-    # This is plenty for gas prices and avoids getting flagged by GasBuddy.
+    # Runs every 6 hours
     - cron: "0 */6 * * *"
-
-  workflow_dispatch: # Allows you to run it manually whenever you want
+  workflow_dispatch: 
 
 permissions:
   contents: write
@@ -27,8 +25,11 @@ jobs:
       - name: Install deps
         run: npm install
 
+      - name: Install Playwright Browsers
+        # This installs the actual Chromium browser and required Linux libraries
+        run: npx playwright install chromium --with-deps
+
       - name: Update Gas Prices
-        # Assuming you named your script scripts/updateGas.js
         run: node scripts/updateGas.js
 
       - name: Commit changes
