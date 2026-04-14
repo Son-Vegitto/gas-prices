@@ -12,6 +12,7 @@ stations = {
 session = requests.Session()
 headers = {
     "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
 
 prices = {}
@@ -22,27 +23,29 @@ for name, url in stations.items():
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
-        # 1. Look for the "Hero" price in the visual HTML first.
-        # GasBuddy displays the current Regular price in a very specific span.
-        # It usually looks like: <span class="...">3.99</span>
-        # We search for the first price that is NOT the 'Pay with GasBuddy' discount.
+        # 1. Find the word 'Regular' and the first price ($X.XX) that follows it.
+        # This bypasses the hidden metadata and grabs what's visually near the label.
+        # Pattern: Find 'Regular', then skip up to 300 chars of HTML, then find X.XX
+        match = re.search(r'Regular.*?(\d\.\d{2})', html, re.IGNORECASE | re.DOTALL)
         
-        # This regex looks for a price that is NOT 3.24 or 3.51 (common discounts)
-        all_visual_prices = re.findall(r'>(\d\.\d{2})</span>', html)
-        
-        # Filter out the lower "GasBuddy Card" prices we saw in your screenshot ($3.51, etc)
-        # We want the standard price, which is usually the HIGHEST of the Regular options.
-        valid_pump_prices = [p for p in all_visual_prices if float(p) > 3.60]
-
-        if valid_pump_prices:
-            # The first large price in the list is almost always the Regular Credit price.
-            prices[name] = f"${valid_pump_prices[0]}"
+        if match:
+            val = match.group(1)
+            # Validate: If it's too low (like 3.24 or 3.51 from the GB card), 
+            # we keep looking for the next one.
+            if float(val) < 3.60:
+                # Search again but skip the first match
+                second_match = re.search(r'Regular.*?(\d\.\d{2}).*?(\d\.\d{2})', html, re.IGNORECASE | re.DOTALL)
+                if second_match:
+                    prices[name] = f"${second_match.group(2)}"
+                else:
+                    prices[name] = f"${val}"
+            else:
+                prices[name] = f"${val}"
         else:
-            # Fallback to the JSON block if visual fails
-            json_pattern = r'"fuelType":"Regular".*?"price":(\d\.\d{2})'
-            match = re.search(json_pattern, html)
-            if match:
-                prices[name] = f"${match.group(1)}"
+            # Plan B: Direct JSON search for the 'price' field
+            json_match = re.search(r'"fuelType":"Regular".*?"price":(\d\.\d{2})', html)
+            if json_match:
+                prices[name] = f"${json_match.group(1)}"
             else:
                 prices[name] = "N/A"
                 
