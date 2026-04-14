@@ -1,19 +1,19 @@
 {
-  "updated": "4/13/2026, 9:08:42 PM",
+  "updated": "4/13/2026, 9:15:51 PM",
   "stations": [
     {
       "id": "7072",
-      "name": "Error",
+      "name": "Blocked or Timeout",
       "price": "N/A"
     },
     {
       "id": "33030",
-      "name": "Error",
+      "name": "Blocked or Timeout",
       "price": "N/A"
     },
     {
       "id": "26758",
-      "name": "Error",
+      "name": "Blocked or Timeout",
       "price": "N/A"
     }
   ]
