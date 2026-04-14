@@ -4,5 +4,8 @@
   "type": "module",
   "scripts": {
     "update": "node scripts/updateGas.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
   }
 }
