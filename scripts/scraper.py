@@ -18,20 +18,19 @@ async def main():
         try:
             print(f"Fetching {name} (ID: {s_id})...")
             
-            # Using the exact method from your debug log
-            # In this version, price_lookup returns a list of price objects
-            station_data = await gb.price_lookup(s_id)
+            # Use station_id as a keyword argument to satisfy the function signature
+            station_data = await gb.price_lookup(station_id=s_id)
             
             regular_price = "N/A"
             
             if station_data:
                 for p in station_data:
-                    # Check for 'regular' fuel type
-                    # The library usually returns objects with 'type' and 'price'
+                    # Check for 'regular' or 'unleaded'
                     fuel_type = getattr(p, 'type', '').lower()
-                    if fuel_type == "regular":
+                    if fuel_type in ["regular", "unleaded"]:
                         price_val = getattr(p, 'price', None)
                         if price_val:
+                            # Ensure we handle integers/floats correctly
                             regular_price = f"${price_val}"
                         break
             
@@ -50,4 +49,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
