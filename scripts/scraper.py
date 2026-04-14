@@ -4,49 +4,33 @@ import json
 import os
 
 stations = {
-    "BJs": "https://www.gasbuddy.com/station/26758",
-    "Jacks": "https://www.gasbuddy.com/station/33030",
-    "Lukoil": "https://www.gasbuddy.com/station/7072"
+    "BJs": "BJ's Gas 165 New Rd Parsippany NJ gas prices",
+    "Jacks": "Jacks Food Mart Parsippany NJ gas prices",
+    "Lukoil": "Lukoil 1410 US-46 Parsippany NJ gas prices"
 }
 
-scraper = cloudscraper.create_scraper(
-    browser={
-        'browser': 'chrome',
-        'platform': 'windows',
-        'desktop': True
-    }
-)
+scraper = cloudscraper.create_scraper()
 
 prices = {}
 
-for name, url in stations.items():
+for name, query in stations.items():
     try:
-        print(f"Scraping {name}...")
-        response = scraper.get(url, timeout=15)
-        html = response.text
-
-        # 1. Try to find all instances of "price":3.XX
-        # This is usually the most reliable way to find the actual data
-        price_matches = re.findall(r'"price":(\d\.\d{2})', html)
+        print(f"Searching for {name} prices...")
+        # Search Google for the station price
+        search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+        response = scraper.get(search_url, timeout=15)
         
-        # 2. Filter out common 'fake' or 'metadata' prices
-        # We want prices between $2.00 and $6.00 (standard for 2026)
-        valid_prices = [p for p in price_matches if 2.00 <= float(p) <= 6.00]
+        # Look for a price pattern in the search results
+        # Google often shows "$3.95" or similar in the snippet
+        match = re.search(r'\$(\d\.\d{2})', response.text)
         
-        if valid_prices:
-            # Usually the first valid price in the data block is Regular
-            prices[name] = f"${valid_prices[0]}"
+        if match:
+            prices[name] = f"${match.group(1)}"
         else:
-            # Fallback: search for the price inside the visual span class
-            # GasBuddy often uses a specific span for the price
-            span_match = re.search(r'>(\d\.\d{2})</span>', html)
-            if span_match:
-                prices[name] = f"${span_match.group(1)}"
-            else:
-                prices[name] = "N/A"
-                
+            prices[name] = "N/A"
+            
     except Exception as e:
-        print(f"Error at {name}: {e}")
+        print(f"Error searching {name}: {e}")
         prices[name] = "Error"
 
 # Save results
