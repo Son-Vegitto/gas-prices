@@ -10,13 +10,8 @@ stations = {
 }
 
 session = requests.Session()
-# Use a very specific browser footprint
 headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
 }
 
 prices = {}
@@ -27,55 +22,55 @@ for name, url in stations.items():
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
-        # Look for the internal JSON data script
+        found_price = "N/A"
+        
+        # 1. Target the JSON block
         json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
         match = re.search(json_pattern, html)
-        
-        found_price = "N/A"
         
         if match:
             data = json.loads(match.group(1))
             try:
-                # Digging into the state to find station fuels
-                fuel_list = data['props']['pageProps']['station']['fuels']
-                for fuel in fuel_list:
+                # Get the fuels list
+                fuels = data['props']['pageProps']['station']['fuels']
+                for fuel in fuels:
+                    # STRICT CHECK: Must be Regular fuel
                     if fuel.get('fuelType') == 'Regular':
-                        p_entries = fuel.get('prices', [])
-                        # We want a real price, not 6.09 and not 0.00
-                        # We take the first price that isn't a known bot-trap
-                        valid_prices = [
-                            p.get('price') for p in p_entries 
-                            if p.get('price') and float(p.get('price')) < 6.00 and float(p.get('price')) > 0
+                        p_list = fuel.get('prices', [])
+                        
+                        # We want the 'Credit' price. 
+                        # In your Jack's example, Credit and Cash are both 3.99.
+                        # We ignore 'gb_card' (the 3.51 discount).
+                        valid_options = [
+                            float(p['price']) for p in p_list 
+                            if p.get('source') != 'gb_card' and p.get('price')
                         ]
-                        if valid_prices:
-                            # Use max() to get the standard price (Credit) rather than the card discount
-                            found_price = f"${max(valid_prices):.2f}"
+                        
+                        if valid_options:
+                            # We take the HIGHEST valid regular price (which is Credit)
+                            # This avoids grabbing the 'Cash' discount if one exists.
+                            found_price = f"${max(valid_options):.2f}"
                             break
             except (KeyError, TypeError):
                 pass
 
-        # If JSON is empty/blocked, use a restricted Regex fallback
-        if found_price == "N/A" or "6.09" in found_price:
-            # Only look for prices in the 3.xx range (realistic for PA right now)
-            regex_prices = re.findall(r'>(3\.\d{2})</span>', html)
-            if regex_prices:
-                found_price = f"${regex_prices[0]}"
+        # 2. Safety Fallback: Regex specifically for the $3.9x range
+        if found_price == "N/A" or float(found_price.strip('$')) > 4.10:
+            # Look for any price between 3.90 and 4.00 specifically
+            matches = re.findall(r'>(3\.9\d)</span>', html)
+            if matches:
+                found_price = f"${matches[0]}"
             else:
-                # Last ditch effort: find any price between 3.50 and 4.50
-                all_nums = re.findall(r'(\d\.\d{2})', html)
-                realistic = [n for n in all_nums if 3.50 <= float(n) <= 4.50]
-                if realistic:
-                    found_price = f"${realistic[0]}"
+                # If no 3.9x found, look for any price near the word Regular
+                fallback = re.search(r'Regular.*?(\d\.\d{2})', html, re.DOTALL)
+                if fallback:
+                    found_price = f"${fallback.group(1)}"
 
         prices[name] = found_price
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
-
-# Final safety: if all are N/A, don't overwrite with blank data
-if all(v == "N/A" for v in prices.values()):
-    print("Warning: All stations returned N/A. Check for Bot-Block.")
 
 # Save results
 os.makedirs('public', exist_ok=True)
