@@ -5,54 +5,37 @@ const API_KEY = process.env.WEB_SCRAPING_AI_KEY;
 const OUT_FILE = path.join("public", "gas_prices.json");
 
 const STATIONS = [
-  { id: "7072", url: "https://www.gasbuddy.com/station/7072", name: "Lukoil (Souderton)" },
-  { id: "33030", url: "https://www.gasbuddy.com/station/33030", name: "Jack's Food Mart (Bethlehem)" },
-  { id: "26758", url: "https://www.gasbuddy.com/station/26758", name: "BJ's (Allentown)" }
+  { id: "7072", q: "Lukoil+681+E+Broad+St+Souderton+PA+gas+price", name: "Lukoil (Souderton)" },
+  { id: "33030", q: "Jacks+Food+Mart+3010+Schoenersville+Rd+Bethlehem+PA+gas+price", name: "Jack's Food Mart (Bethlehem)" },
+  { id: "26758", q: "BJs+Gas+1785+Airport+Rd+Allentown+PA+gas+price", name: "BJ's (Allentown)" }
 ];
 
-async function fetchWithAPI(station) {
+async function fetchFromGoogle(station) {
   try {
-    console.log(`Fetching ${station.name}...`);
+    console.log(`Searching Google for ${station.name}...`);
     
-    // Adding 'render=true' to the API call. 
-    // This tells WebScraping.ai to run the JavaScript (like a real browser).
-    const apiUrl = `https://api.webscraping.ai/html?api_key=${API_KEY}&url=${encodeURIComponent(station.url)}&proxy_type=residential&render=true`;
+    // We search Google via the proxy. 
+    // We don't need 'render' for Google snippets, which saves credits.
+    const googleUrl = `https://www.google.com/search?q=${station.q}`;
+    const apiUrl = `https://api.webscraping.ai/html?api_key=${API_KEY}&url=${encodeURIComponent(googleUrl)}&proxy_type=residential`;
     
     const res = await fetch(apiUrl);
     if (!res.ok) throw new Error(`API Error: ${res.status}`);
     
     const html = await res.text();
 
-    // DIAGNOSTIC: See what we are actually getting
-    console.log(`Debug: Received ${html.length} characters. Start: ${html.substring(0, 100).replace(/\n/g, '')}`);
+    // Google often shows the price as "Regular: $3.49" or just "$3.49" in the snippet.
+    // We look for the first price match that isn't a weird number.
+    const priceMatch = html.match(/\$(\d\.\d{2})/);
+    
+    return { 
+      id: station.id, 
+      name: station.name, 
+      price: priceMatch ? priceMatch[0] : "N/A" 
+    };
 
-    // If we see "Pardon Our Interruption", we are still being blocked
-    if (html.includes("Pardon Our Interruption") || html.includes("captcha")) {
-      console.error("Blocked by Captcha/Bot Wall even with proxy.");
-      return { id: station.id, name: station.name, price: "Blocked" };
-    }
-
-    // New broad-spectrum price search
-    // Looks for: "price":3.49 or "price":"3.49" or $3.49
-    const regexList = [
-      /\"price\"\:\"?(\d\.\d{2})\"?/,
-      /credit\"\:\{\"price\"\:(\d\.\d{2})/,
-      /\$(\d\.\d{2})/
-    ];
-
-    let foundPrice = "N/A";
-
-    for (const regex of regexList) {
-      const match = html.match(regex);
-      if (match && match[1]) {
-        foundPrice = `$${match[1]}`;
-        break; 
-      }
-    }
-
-    return { id: station.id, name: station.name, price: foundPrice };
   } catch (err) {
-    console.error(`Error on ${station.name}:`, err.message);
+    console.error(`Error searching ${station.name}:`, err.message);
     return { id: station.id, name: station.name, price: "N/A" };
   }
 }
@@ -60,7 +43,7 @@ async function fetchWithAPI(station) {
 async function main() {
   const results = [];
   for (const s of STATIONS) {
-    results.push(await fetchWithAPI(s));
+    results.push(await fetchFromGoogle(s));
     await new Promise(r => setTimeout(r, 2000));
   }
 
