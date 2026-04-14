@@ -1,64 +1,80 @@
 import cloudscraper
-from bs4 import BeautifulSoup
 import json
 import os
 
+# Your specific station IDs
 stations = {
-    "BJs": "https://www.gasbuddy.com/station/26758",
-    "Jacks": "https://www.gasbuddy.com/station/33030",
-    "Lukoil": "https://www.gasbuddy.com/station/7072"
+    "BJs": "26758",
+    "Jacks": "33030",
+    "Lukoil": "7072"
 }
 
-scraper = cloudscraper.create_scraper(
-    browser={
-        'browser': 'chrome',
-        'platform': 'android',
-        'desktop': False
-    }
-)
-
+# Mimic a real browser request
+scraper = cloudscraper.create_scraper()
 prices = {}
 
-for name, url in stations.items():
-    try:
-        print(f"Fetching {name}...")
-        response = scraper.get(url, timeout=10)
-        
-        if response.status_code != 200:
-            prices[name] = f"Error {response.status_code}"
-            continue
+# The GraphQL query GasBuddy uses to get station info
+graphql_query = """
+query GetStation($id: ID!) {
+  station(id: $id) {
+    prices {
+      fuel
+      credit {
+        price
+      }
+      cash {
+        price
+      }
+    }
+  }
+}
+"""
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        next_data = soup.find('script', id='__NEXT_DATA__')
+for name, station_id in stations.items():
+    try:
+        print(f"Requesting data for {name}...")
         
-        if next_data:
-            data = json.loads(next_data.string)
-            # Navigate the JSON tree to find the fuel list
-            # The structure is usually props -> pageProps -> station -> fuels
-            fuels = data.get('props', {}).get('pageProps', {}).get('station', {}).get('fuels', [])
+        # Send a POST request to their API endpoint
+        response = scraper.post(
+            "https://www.gasbuddy.com/graphql",
+            json={
+                "operationName": "GetStation",
+                "variables": {"id": station_id},
+                "query": graphql_query
+            },
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Navigate to the list of prices
+            price_data = data.get('data', {}).get('station', {}).get('prices', [])
             
-            found_price = "N/A"
-            for fuel in fuels:
-                # We only want Regular (case insensitive check)
-                if fuel.get('fuelType', '').lower() == 'regular':
-                    price_list = fuel.get('prices', [])
-                    if price_list:
-                        # Grab the most recent price (first in list)
-                        val = price_list[0].get('price')
-                        found_price = f"${val}" if val else "N/A"
+            # Find 'regular' (usually the first item)
+            regular_price = "N/A"
+            for p in price_data:
+                if p.get('fuel') == 'regular':
+                    # Try credit price first, then cash
+                    val = p.get('credit', {}).get('price') or p.get('cash', {}).get('price')
+                    if val:
+                        regular_price = f"${val}"
                     break
-            prices[name] = found_price
+            
+            prices[name] = regular_price
         else:
-            prices[name] = "No Data"
+            print(f"API Error for {name}: {response.status_code}")
+            prices[name] = "Error"
             
     except Exception as e:
-        print(f"Failed to scrape {name}: {e}")
+        print(f"Failed to fetch {name}: {e}")
         prices[name] = "Error"
 
-# Ensure the public directory exists
+# Save to the file your GitHub Action expects
 os.makedirs('public', exist_ok=True)
-
-# Save to the specific file your GitHub Action is looking for
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
-    print("File saved successfully.")
+
+print(f"Final Data: {prices}")
