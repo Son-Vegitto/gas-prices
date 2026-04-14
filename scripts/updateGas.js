@@ -6,57 +6,51 @@ const STATION_IDS = ["7072", "33030", "26758"];
 const OUT_FILE = path.join("public", "gas_prices.json");
 
 async function scrapeStation(browser, id) {
-  // Use a mobile-like user agent to often bypass heavy desktop bot checks
+  // Creating a context with a standard desktop User-Agent
   const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1'
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
   });
-  
   const page = await context.newPage();
-  
+
   try {
     console.log(`Checking Station ${id}...`);
-    // Navigate and wait for the network to be somewhat quiet
+    
+    // Go to page and wait until the basic HTML is loaded
     await page.goto(`https://www.gasbuddy.com/station/${id}`, { 
-      waitUntil: 'networkidle', 
+      waitUntil: 'domcontentloaded', 
       timeout: 60000 
     });
 
-    // Let's grab the Name first
-    const name = await page.locator("h1").first().innerText({ timeout: 10000 });
+    // Wait for ANY element containing a "$" followed by a digit
+    // This bypasses the need for specific class names
+    const priceLocator = page.locator('text=/\$\d+/').first();
+    await priceLocator.waitFor({ timeout: 15000 });
 
-    // New Strategy: Look for the text "$" followed by numbers anywhere in the main area
-    const priceText = await page.evaluate(() => {
-      // Find all elements that have a "$" in them
-      const elements = Array.from(document.querySelectorAll('span, div, p'));
-      const priceElement = elements.find(el => /^\$\d+\.\d{2}/.test(el.innerText.trim()));
-      return priceElement ? priceElement.innerText.trim() : null;
-    });
+    const price = await priceLocator.innerText();
+    const name = await page.locator("h1").first().innerText();
 
     await context.close();
-    return { 
-      id, 
-      name: name.trim() || `Station ${id}`, 
-      price: priceText || "N/A" 
-    };
-
+    return { id, name: name.trim(), price: price.trim() };
   } catch (err) {
-    console.error(`Error on ${id}:`, err.message);
+    console.error(`Station ${id} failed: ${err.message}`);
+    // Take a screenshot to the logs folder if you wanted to debug, 
+    // but for now, we'll just return N/A
     await context.close();
-    return { id, name: "Blocked/Error", price: "N/A" };
+    return { id, name: "Blocked or Timeout", price: "N/A" };
   }
 }
 
 async function main() {
-  // Launch with essential flags for GitHub Actions
   const browser = await chromium.launch({ 
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
   const results = [];
   for (const id of STATION_IDS) {
     results.push(await scrapeStation(browser, id));
-    await new Promise(r => setTimeout(r, 5000)); // 5s delay to be safe
+    // Wait 5 seconds between stations to look more human
+    await new Promise(r => setTimeout(r, 5000));
   }
 
   await browser.close();
@@ -68,7 +62,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Final Result:", JSON.stringify(payload, null, 2));
+  console.log("Final Output:", payload);
 }
 
 main();
