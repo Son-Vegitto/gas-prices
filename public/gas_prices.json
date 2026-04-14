@@ -1,5 +1,5 @@
 {
-  "updated": "4/13/2026, 9:51:05 PM",
+  "updated": "4/13/2026, 9:53:25 PM",
   "stations": [
     {
       "id": "7072",
@@ -8,8 +8,8 @@
     },
     {
       "id": "33030",
-      "name": "Jack's (Bethlehem)",
-      "price": "N/A"
+      "name": "Jack's Food Mart (Bethlehem)",
+      "price": "$2.90"
     },
     {
       "id": "26758",
