@@ -6,19 +6,19 @@ const STATIONS = [
   { 
     id: "7072", 
     url: "https://www.getupside.com/locations/pa/souderton/", 
-    matchers: ["681 E Broad", "Lukoil"], 
+    matchers: ["681", "Broad", "Lukoil"], 
     name: "Lukoil (Souderton)" 
   },
   { 
     id: "33030", 
     url: "https://www.getupside.com/locations/pa/bethlehem/", 
-    matchers: ["3010 Schoenersville", "Jack's", "Jacks"], 
+    matchers: ["3010", "Schoenersville", "Jack"], 
     name: "Jack's Food Mart (Bethlehem)" 
   },
   { 
     id: "26758", 
     url: "https://www.getupside.com/locations/pa/allentown/", 
-    matchers: ["1785 Airport", "BJ's", "BJs"], 
+    matchers: ["1785", "Airport", "BJ"], 
     name: "BJ's (Allentown)" 
   }
 ];
@@ -40,19 +40,20 @@ async function fetchFromUpside(station) {
     const $ = load(html);
     let foundPrice = "N/A";
 
-    // Scan every text block (div, li, tr) for our keywords
-    $("div, li, tr, td").each((_, el) => {
+    // We search through every <li> and <div> that looks like a station listing
+    $("li, div, tr").each((_, el) => {
         const text = $(el).text().trim();
         
-        // Check if this block contains any of our matching keywords
+        // If the block contains any of our key markers (Address number or Name)
         const isMatch = station.matchers.some(m => text.toLowerCase().includes(m.toLowerCase()));
         
         if (isMatch) {
-            // Look for a price format (X.XX) nearby in this block
+            // Regex for price: Look for a number like 2.85 or 3.10
+            // We look for digits then a dot then two digits
             const priceMatch = text.match(/\d\.\d{2}/);
             if (priceMatch) {
                 foundPrice = `$${priceMatch[0]}`;
-                return false; // Found it!
+                return false; // Break the loop
             }
         }
     });
@@ -79,7 +80,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Final JSON produced.");
+  console.log("Final Output:", JSON.stringify(payload, null, 2));
 }
 
 main();
