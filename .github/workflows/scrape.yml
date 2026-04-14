@@ -18,8 +18,7 @@ jobs:
           
       - name: Install dependencies
         # cloudscraper helps avoid getting blocked by GasBuddy
-        run: pip install beautifulsoup4 cloudscraper 
-        run: pip install py-gasbuddy
+        run: pip install py-gasbuddy beautifulsoup4 cloudscraper
         
       - name: Run Scraper
         run: python scripts/scraper.py
