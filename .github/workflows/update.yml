@@ -25,10 +25,6 @@ jobs:
       - name: Install deps
         run: npm install
 
-      - name: Install Playwright Browsers
-        # This installs the actual Chromium browser and required Linux libraries
-        run: npx playwright install chromium --with-deps
-
       - name: Update Gas Prices
         run: node scripts/updateGas.js
 
