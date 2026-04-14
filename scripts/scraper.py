@@ -1,7 +1,11 @@
-import requests
-import json
 import os
-import re
+import json
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
 stations = {
     "BJs": "26758",
@@ -9,54 +13,45 @@ stations = {
     "Lukoil": "7072"
 }
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Connection": "keep-alive",
-    "Upgrade-Insecure-Requests": "1",
-}
+# Setup Chrome Options for GitHub Actions
+chrome_options = Options()
+chrome_options.add_argument("--headless") # Runs without a window
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
 
 prices = {}
 
+# Start the browser
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
 for name, station_id in stations.items():
     try:
-        print(f"Fetching page for {name}...")
-        url = f"https://www.gasbuddy.com/station/{station_id}"
+        print(f"Opening GasBuddy for {name}...")
+        driver.get(f"https://www.gasbuddy.com/station/{station_id}")
         
-        # We use a session to look more like a real person
-        session = requests.Session()
-        response = session.get(url, headers=headers, timeout=15)
-        
-        if response.status_code == 200:
-            html = response.text
-            
-            # GasBuddy stores its data in a JSON object inside a <script> tag.
-            # We are looking for "creditPrice": 3.85 or "price": 3.85 near "Regular"
-            # This regex looks for the price specifically associated with Regular fuel
-            pattern = r'\"fuelProduct\":\"Regular\".*?\"price\":(\d+\.\d+)'
-            match = re.search(pattern, html)
-            
-            if match:
-                price_val = match.group(1)
-                prices[name] = f"${price_val}"
-                print(f"Found {name}: ${price_val}")
+        # Give the page 5 seconds to run its JavaScript and bypass challenges
+        time.sleep(5) 
+
+        # We look for the price using the class you found!
+        # We use a partial match on the class name to be safe
+        try:
+            element = driver.find_element(By.CSS_SELECTOR, "span[class*='FuelTypePriceDisplay-module__price']")
+            price_text = element.text.strip()
+            if price_text:
+                prices[name] = price_text
+                print(f"Success for {name}: {price_text}")
             else:
-                # Fallback: look for any price-like decimal if the specific pattern fails
-                # This helps if they change the JSON structure slightly
-                backup_pattern = r'\"price\":(\d+\.\d+)'
-                matches = re.findall(backup_pattern, html)
-                if matches:
-                    prices[name] = f"${matches[0]}"
-                else:
-                    prices[name] = "N/A"
-        else:
-            print(f"HTTP {response.status_code} for {name}")
-            prices[name] = "Error"
+                prices[name] = "N/A"
+        except:
+            prices[name] = "Not Found"
 
     except Exception as e:
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
+
+driver.quit()
 
 # Save data
 os.makedirs('public', exist_ok=True)
