@@ -1,72 +1,71 @@
 import fs from "node:fs";
 import path from "node:path";
+import { load } from "cheerio";
 
-const STATION_IDS = ["7072", "33030", "26758"];
+const STATIONS_TO_TRACK = [
+  { 
+    id: "7072", 
+    searchUrl: "https://www.gasbuddy.com/home?search=18964&fuel=1", 
+    nameSearch: "Lukoil", 
+    city: "Souderton" 
+  },
+  { 
+    id: "33030", 
+    searchUrl: "https://www.gasbuddy.com/home?search=18017&fuel=1", 
+    nameSearch: "Jack's Food Mart", 
+    city: "Bethlehem" 
+  },
+  { 
+    id: "26758", 
+    searchUrl: "https://www.gasbuddy.com/home?search=18109&fuel=1", 
+    nameSearch: "BJ's", 
+    city: "Allentown" 
+  }
+];
+
 const OUT_FILE = path.join("public", "gas_prices.json");
 
-async function getPrice(id) {
-  const query = {
-    operationName: "GetStation",
-    variables: { id: id },
-    query: `query GetStation($id: ID!) {
-      station(id: $id) {
-        name
-        prices {
-          fuelType
-          credit {
-            price
-            postedTime
-          }
+async function fetchPrice(station) {
+  try {
+    const res = await fetch(station.searchUrl, {
+      headers: { 
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" 
+      }
+    });
+    
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    
+    const html = await res.text();
+    const $ = load(html);
+    let price = "N/A";
+
+    // GasBuddy search results are usually in 'stationListItem' containers
+    $("[class*='GenericStationListItem-module__stationListItem']").each((_, el) => {
+      const stationNameText = $(el).find("h3").text().trim();
+      
+      // Look for our station name in the list item
+      if (stationNameText.toLowerCase().includes(station.nameSearch.toLowerCase())) {
+        const foundPrice = $(el).find("[class*='StationDisplayPrice-module__price']").text().trim();
+        if (foundPrice.startsWith("$")) {
+          price = foundPrice;
+          return false; // Found it, stop looking
         }
       }
-    }`
-  };
-
-  try {
-    const response = await fetch("https://www.gasbuddy.com/graphql", {
-      method: "POST",
-      headers: {
-        "accept": "*/*",
-        "content-type": "application/json",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "origin": "https://www.gasbuddy.com",
-        "referer": `https://www.gasbuddy.com/station/${id}`
-      },
-      body: JSON.stringify(query),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP ${response.status}: ${errorText}`);
-    }
-
-    const data = await response.json();
-    const station = data?.data?.station;
-    
-    if (!station) return { id, name: "Not Found", price: "N/A" };
-
-    // GasBuddy returns prices in an array; we want 'regular'
-    const regularData = station.prices.find(p => p.fuelType === "regular");
-    const price = regularData?.credit?.price ? `$${regularData.credit.price}` : "N/A";
-
-    return {
-      id,
-      name: station.name || `Station ${id}`,
-      price: price
-    };
+    return { id: station.id, name: `${station.nameSearch} (${station.city})`, price };
   } catch (err) {
-    console.error(`Error on ${id}:`, err.message);
-    return { id, name: "Blocked", price: "N/A" };
+    console.error(`Error fetching ${station.nameSearch}:`, err.message);
+    return { id: station.id, name: station.nameSearch, price: "N/A" };
   }
 }
 
 async function main() {
   const results = [];
-  for (const id of STATION_IDS) {
-    console.log(`Fetching ${id}...`);
-    const data = await getPrice(id);
-    results.push(data);
-    await new Promise(r => setTimeout(r, 2000)); // Be gentle
+  for (const s of STATIONS_TO_TRACK) {
+    console.log(`Searching for ${s.nameSearch} in ${s.city}...`);
+    results.push(await fetchPrice(s));
+    await new Promise(r => setTimeout(r, 3000)); // Be gentle to avoid getting flagged
   }
 
   const payload = {
@@ -76,7 +75,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Final payload written to disk.");
+  console.log("Update Complete:", payload);
 }
 
 main();
