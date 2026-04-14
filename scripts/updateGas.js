@@ -1,58 +1,53 @@
 import fs from "node:fs";
 import path from "node:path";
+import { load } from "cheerio";
 
 const STATIONS = [
-  { id: "7072", zip: "18964", search: "Lukoil", display: "Lukoil (Souderton)" },
-  { id: "33030", zip: "18017", search: "Jack's Food Mart", display: "Jack's (Bethlehem)" },
-  { id: "26758", zip: "18109", search: "BJ's", display: "BJ's (Allentown)" }
+  { id: "7072", q: "Lukoil+Souderton+PA+gas+price", name: "Lukoil (Souderton)" },
+  { id: "33030", q: "Jacks+Food+Mart+Bethlehem+PA+gas+price", name: "Jack's (Bethlehem)" },
+  { id: "26758", q: "BJs+Allentown+PA+gas+price", name: "BJ's (Allentown)" }
 ];
 
 const OUT_FILE = path.join("public", "gas_prices.json");
 
-async function fetchFromGeico(station) {
+async function fetchFromSearch(station) {
   try {
-    // Geico's gas tool uses a simple fetchable URL
-    const url = `https://api.geico.com/ms/gas-prices/v1/fuel-prices?zipCode=${station.zip}&radius=5`;
+    console.log(`Searching for ${station.name}...`);
+    // Using Bing Search because it's much easier to scrape from GitHub
+    const url = `https://www.bing.com/search?q=${station.q}`;
     
-    console.log(`Searching for ${station.display}...`);
     const res = await fetch(url, {
       headers: {
-        "Accept": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
       }
     });
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     
-    const data = await res.json();
+    const html = await res.text();
+    const $ = load(html);
     
-    // Scan the list of stations Geico found
-    const found = data.fuelStations?.find(s => 
-      s.name.toLowerCase().includes(station.search.toLowerCase())
-    );
+    // Look for a price pattern ($X.XX) in the search result snippets
+    const pageText = $("body").text();
+    const priceMatch = pageText.match(/\$\d\.\d{2}/); 
 
-    if (found) {
-      // Get the 'Regular' fuel price
-      const regPrice = found.fuelPrices?.find(p => p.fuelType === "Regular");
-      return { 
-        id: station.id, 
-        name: station.display, 
-        price: regPrice ? `$${regPrice.price}` : "N/A" 
-      };
-    }
+    return {
+      id: station.id,
+      name: station.name,
+      price: priceMatch ? priceMatch[0] : "N/A"
+    };
 
-    return { id: station.id, name: station.display, price: "Not in Results" };
   } catch (err) {
-    console.error(`Failed ${station.display}:`, err.message);
-    return { id: station.id, name: station.display, price: "N/A" };
+    console.error(`Search failed for ${station.name}:`, err.message);
+    return { id: station.id, name: station.name, price: "N/A" };
   }
 }
 
 async function main() {
   const results = [];
   for (const s of STATIONS) {
-    results.push(await fetchFromGeico(s));
-    await new Promise(r => setTimeout(r, 2000));
+    results.push(await fetchFromSearch(s));
+    await new Promise(r => setTimeout(r, 3000));
   }
 
   const payload = {
@@ -62,7 +57,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Success:", JSON.stringify(payload, null, 2));
+  console.log("Payload:", payload);
 }
 
 main();
