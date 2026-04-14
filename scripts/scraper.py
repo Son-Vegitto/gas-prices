@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import re
 
 stations = {
     "BJs": "26758",
@@ -8,78 +9,58 @@ stations = {
     "Lukoil": "7072"
 }
 
-# These are the "Magic" headers that usually bypass the 400 error
 headers = {
-    "accept": "*/*",
-    "accept-language": "en-US,en;q=0.9",
-    "content-type": "application/json",
-    "sec-ch-ua": '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    "x-gasbuddy-client-id": "GASBUDDY_WEB",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
 }
 
 prices = {}
 
 for name, station_id in stations.items():
     try:
-        print(f"Attempting API pull for {name}...")
-        url = "https://www.gasbuddy.com/graphql"
+        print(f"Fetching page for {name}...")
+        url = f"https://www.gasbuddy.com/station/{station_id}"
         
-        # This is a minimized query - less likely to trigger syntax-related 400s
-        query = """
-        query GetStation($id: ID!) {
-          station(id: $id) {
-            prices {
-              fuelProduct
-              credit { price }
-              cash { price }
-            }
-          }
-        }
-        """
-        
-        payload = {
-            "operationName": "GetStation",
-            "variables": {"id": str(station_id)},
-            "query": query
-        }
-        
-        # We use a session to handle any cookie requirements automatically
+        # We use a session to look more like a real person
         session = requests.Session()
-        response = session.post(url, headers=headers, json=payload, timeout=15)
+        response = session.get(url, headers=headers, timeout=15)
         
         if response.status_code == 200:
-            data = response.json()
-            station_data = data.get('data', {}).get('station', {})
+            html = response.text
             
-            if station_data and 'prices' in station_data:
-                # Find Regular gas (fuelProduct is a string)
-                regular_entry = next((p for p in station_data['prices'] if p.get('fuelProduct') == 'Regular'), None)
-                
-                if regular_entry:
-                    # Logic: Credit price first, then Cash
-                    price = regular_entry.get('credit', {}).get('price') or regular_entry.get('cash', {}).get('price')
-                    prices[name] = f"${price}" if price else "N/A"
+            # GasBuddy stores its data in a JSON object inside a <script> tag.
+            # We are looking for "creditPrice": 3.85 or "price": 3.85 near "Regular"
+            # This regex looks for the price specifically associated with Regular fuel
+            pattern = r'\"fuelProduct\":\"Regular\".*?\"price\":(\d+\.\d+)'
+            match = re.search(pattern, html)
+            
+            if match:
+                price_val = match.group(1)
+                prices[name] = f"${price_val}"
+                print(f"Found {name}: ${price_val}")
+            else:
+                # Fallback: look for any price-like decimal if the specific pattern fails
+                # This helps if they change the JSON structure slightly
+                backup_pattern = r'\"price\":(\d+\.\d+)'
+                matches = re.findall(backup_pattern, html)
+                if matches:
+                    prices[name] = f"${matches[0]}"
                 else:
                     prices[name] = "N/A"
-            else:
-                prices[name] = "No Data"
         else:
-            print(f"Error {response.status_code} for {name}")
+            print(f"HTTP {response.status_code} for {name}")
             prices[name] = "Error"
 
     except Exception as e:
-        print(f"Exception for {name}: {e}")
+        print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save the final synced data
+# Save data
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
 
-print(f"Success! Final data: {prices}")
+print(f"Final Outcome: {prices}")
