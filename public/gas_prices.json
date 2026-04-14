@@ -1,20 +1,20 @@
 {
-  "updated": "4/13/2026, 10:17:17 PM",
+  "updated": "4/13/2026, 10:20:39 PM",
   "stations": [
     {
       "id": "7072",
       "name": "Lukoil (Souderton)",
-      "price": "N/A"
+      "price": "Blocked"
     },
     {
       "id": "33030",
       "name": "Jack's Food Mart (Bethlehem)",
-      "price": "N/A"
+      "price": "Blocked"
     },
     {
       "id": "26758",
       "name": "BJ's (Allentown)",
-      "price": "N/A"
+      "price": "Blocked"
     }
   ]
 }
