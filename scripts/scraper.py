@@ -1,48 +1,51 @@
 import os
 import json
 import asyncio
-from py_gasbuddy import GasBuddy # Changed from gasbuddy to py_gasbuddy
+from py_gasbuddy import GasBuddy
 
 async def main():
     # Your station IDs
-    station_ids = {
-        "BJs": 26758,
-        "Jacks": 33030,
-        "Lukoil": 7072
+    stations_to_track = {
+        "BJs": "26758",
+        "Jacks": "33030",
+        "Lukoil": "7072"
     }
 
     gb = GasBuddy()
     prices = {}
 
-    for name, s_id in station_ids.items():
+    for name, s_id in stations_to_track.items():
         try:
-            print(f"Fetching data for {name}...")
-            # Fetch the station data
-            station = await gb.get_station(s_id)
+            print(f"Fetching {name} (ID: {s_id})...")
+            
+            # The library method name is now get_station_and_prices
+            # It returns a station object with a 'prices' list
+            station = await gb.get_station_and_prices(s_id)
             
             regular_price = "N/A"
-            # Check if prices exist in the returned object
+            
             if station and station.prices:
-                for fuel in station.prices:
-                    if fuel.fuel_type == "Regular":
-                        # Get credit or cash price
-                        price_val = fuel.credit_price or fuel.cash_price
-                        if price_val:
-                            regular_price = f"${price_val}"
+                # The library organizes these by fuel type
+                for p in station.prices:
+                    if p.fuel_type.lower() == "regular":
+                        # Some stations report cash vs credit; we'll take credit first
+                        val = p.credit_price or p.cash_price
+                        if val:
+                            regular_price = f"${val}"
                         break
             
             prices[name] = regular_price
             
         except Exception as e:
-            print(f"Error fetching {name}: {e}")
+            print(f"Error fetching {name}: {str(e)}")
             prices[name] = "Error"
 
-    # Save the file
+    # Save to public/gas_prices.json
     os.makedirs('public', exist_ok=True)
     with open('public/gas_prices.json', 'w') as f:
         json.dump(prices, f)
     
-    print(f"Final results: {prices}")
+    print(f"Final Data Saved: {prices}")
 
 if __name__ == "__main__":
     asyncio.run(main())
