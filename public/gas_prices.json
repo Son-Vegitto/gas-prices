@@ -1,19 +1,19 @@
 {
-  "updated": "4/13/2026, 9:19:50 PM",
+  "updated": "4/13/2026, 9:22:34 PM",
   "stations": [
     {
       "id": "7072",
-      "name": "API Error",
+      "name": "Blocked",
       "price": "N/A"
     },
     {
       "id": "33030",
-      "name": "API Error",
+      "name": "Blocked",
       "price": "N/A"
     },
     {
       "id": "26758",
-      "name": "API Error",
+      "name": "Blocked",
       "price": "N/A"
     }
   ]
