@@ -1,4 +1,4 @@
-name: Update Gas Prices JSON
+name: Update Gas Prices JSON old
 
 on:
   schedule:
