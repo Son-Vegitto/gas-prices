@@ -1,47 +1,54 @@
 import requests
-import re
 import json
 import os
 
 stations = {
-    "BJs": "https://www.google.com/search?q=BJs+Gas+Parsippany+NJ+gasbuddy+regular+price",
-    "Jacks": "https://www.google.com/search?q=Jacks+Food+Mart+Parsippany+NJ+gasbuddy+regular+price",
-    "Lukoil": "https://www.google.com/search?q=Lukoil+Parsippany+NJ+US-46+gasbuddy+regular+price"
+    "BJs": "26758",
+    "Jacks": "33030",
+    "Lukoil": "7072"
 }
 
-# Standard headers to look like a desktop browser
+# This is a public API endpoint often used by their mobile-web integration
+API_URL = "https://www.gasbuddy.com/assets-v2/api/stations"
+
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-G960U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36",
+    "Accept": "application/json",
+    "referer": "https://www.gasbuddy.com/home",
+    "x-gasbuddy-app-id": "gasbuddy-web"
 }
 
 prices = {}
 
-for name, url in stations.items():
+for name, s_id in stations.items():
     try:
-        print(f"Checking Google for {name} price...")
-        response = requests.get(url, headers=headers, timeout=15)
-        html = response.text
-
-        # Search for a price pattern like "$3.92" or "3.92" 
-        # specifically in a context that looks like a search snippet.
-        # We look for a 3 followed by a dot and two digits.
-        match = re.search(r'\$(\d\.\d{2})', html)
+        print(f"Polling API for {name}...")
+        # Direct hit to the station's JSON data
+        response = requests.get(f"{API_URL}/{s_id}", headers=headers, timeout=10)
         
-        if match:
-            prices[name] = f"${match.group(1)}"
+        if response.status_code == 200:
+            data = response.json()
+            fuels = data.get('fuels', [])
+            
+            found_price = "N/A"
+            for f in fuels:
+                # We specifically want 'Regular' gas
+                if f.get('fuelType') == 'Regular' or f.get('fuelTypeId') == 1:
+                    # Priority: Credit Price -> Cash Price
+                    val = f.get('creditPrice') or f.get('cashPrice')
+                    if val:
+                        found_price = f"${val}"
+                        break
+            prices[name] = found_price
         else:
-            # Fallback for when the $ sign isn't there
-            match_no_dollar = re.search(r'\s(\d\.\d{2})\s', html)
-            if match_no_dollar:
-                prices[name] = f"${match_no_dollar.group(1)}"
-            else:
-                prices[name] = "N/A"
-                
+            print(f"API Error {response.status_code} for {name}")
+            prices[name] = "N/A"
+            
     except Exception as e:
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save results
+# Save the results
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
