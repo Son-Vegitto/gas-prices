@@ -1,56 +1,57 @@
 import fs from "node:fs";
 import path from "node:path";
-import { load } from "cheerio";
 
 const STATIONS = [
-  { id: "7072", name: "Lukoil Souderton PA", url: "https://www.gasbuddy.com/station/7072" },
-  { id: "33030", name: "Jacks Food Mart Bethlehem PA", url: "https://www.gasbuddy.com/station/33030" },
-  { id: "26758", name: "BJs Allentown PA", url: "https://www.gasbuddy.com/station/26758" }
+  { id: "7072", zip: "18964", search: "Lukoil", display: "Lukoil (Souderton)" },
+  { id: "33030", zip: "18017", search: "Jack's Food Mart", display: "Jack's (Bethlehem)" },
+  { id: "26758", zip: "18109", search: "BJ's", display: "BJ's (Allentown)" }
 ];
 
 const OUT_FILE = path.join("public", "gas_prices.json");
 
-async function fetchWithProxy(station) {
-  // Using a public "all-origins" proxy to hide the GitHub IP
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(station.url)}`;
-
+async function fetchFromGeico(station) {
   try {
-    console.log(`Fetching ${station.name} via proxy...`);
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error(`Proxy Error: ${res.status}`);
+    // Geico's gas tool uses a simple fetchable URL
+    const url = `https://api.geico.com/ms/gas-prices/v1/fuel-prices?zipCode=${station.zip}&radius=5`;
+    
+    console.log(`Searching for ${station.display}...`);
+    const res = await fetch(url, {
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     
     const data = await res.json();
-    const $ = load(data.contents);
-
-    // Look for price in the meta tags or specific spans
-    // GasBuddy often puts the price in a meta tag for SEO
-    let price = $("meta[property='og:description']").attr("content") || "";
-    const priceMatch = price.match(/\$\d+\.\d{2}/);
     
-    if (priceMatch) {
-      return { id: station.id, name: station.name, price: priceMatch[0] };
+    // Scan the list of stations Geico found
+    const found = data.fuelStations?.find(s => 
+      s.name.toLowerCase().includes(station.search.toLowerCase())
+    );
+
+    if (found) {
+      // Get the 'Regular' fuel price
+      const regPrice = found.fuelPrices?.find(p => p.fuelType === "Regular");
+      return { 
+        id: station.id, 
+        name: station.display, 
+        price: regPrice ? `$${regPrice.price}` : "N/A" 
+      };
     }
 
-    // Fallback to text search
-    let bodyText = $("body").text();
-    const bodyMatch = bodyText.match(/\$\d+\.\d{2}/);
-    
-    return { 
-      id: station.id, 
-      name: station.name, 
-      price: bodyMatch ? bodyMatch[0] : "N/A" 
-    };
-
+    return { id: station.id, name: station.display, price: "Not in Results" };
   } catch (err) {
-    console.error(`Error on ${station.id}:`, err.message);
-    return { id: station.id, name: station.name, price: "N/A" };
+    console.error(`Failed ${station.display}:`, err.message);
+    return { id: station.id, name: station.display, price: "N/A" };
   }
 }
 
 async function main() {
   const results = [];
   for (const s of STATIONS) {
-    results.push(await fetchWithProxy(s));
+    results.push(await fetchFromGeico(s));
     await new Promise(r => setTimeout(r, 2000));
   }
 
@@ -61,7 +62,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Finished:", payload);
+  console.log("Success:", JSON.stringify(payload, null, 2));
 }
 
 main();
