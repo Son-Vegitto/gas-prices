@@ -49,55 +49,51 @@ for name, station_id in stations.items():
             element = driver.find_element(By.CSS_SELECTOR, selector)
             price_text = element.text.strip()
             
-            # Final sanity check to ensure we didn't grab dashes
             if "$" in price_text:
                 prices[name] = price_text
                 print(f"Success for {name}: {price_text}")
             else:
-                prices[name] = "Price Missing"
+                prices[name] = "N/A"
                 print(f"Warning: {name} loaded but price is empty/dashes.")
                 
         except Exception as wait_error:
-            # If we timeout, try one last direct grab before giving up
             print(f"Wait timed out for {name}, attempting last-ditch grab...")
             try:
                 final_check = driver.find_element(By.CSS_SELECTOR, selector).text.strip()
                 prices[name] = final_check if final_check else "N/A"
             except:
-                prices[name] = "Not Found"
+                prices[name] = "N/A"
 
     except Exception as e:
         print(f"Critical error at {name}: {e}")
-        prices[name] = "Error"
+        prices[name] = "N/A"
 
 driver.quit()
 
-# --- NEW SORTING LOGIC ---
+# --- SORTING LOGIC ---
 def sort_by_price(item):
-    """
-    Helper function to sort prices. 
-    item[0] is the station name, item[1] is the price string.
-    """
     price_str = item[1]
     try:
-        # Strip the '$' and convert to a float for mathematical sorting
+        # Convert "$3.15" to 3.15
         return float(price_str.replace('$', ''))
     except ValueError:
-        # If it's "Error", "Not Found", or "Price Missing", 
-        # return infinity so it gets pushed to the very bottom of the list.
+        # Push "N/A" or "Error" to the end
         return float('inf')
 
-# Sort the dictionary items using our helper function
 sorted_items = sorted(prices.items(), key=sort_by_price)
 
-# Convert to a list of dictionaries (Highly recommended for KWGT)
-# This will look like: [{"name": "Lukoil", "price": "$3.10"}, {"name": "BJs", "price": "$3.15"}]
+# Convert to a list of dictionaries
 sorted_prices_list = [{"name": name, "price": price} for name, price in sorted_items]
 
-# Save the final sorted data
+# --- KWGT-FRIENDLY WRAPPER ---
+# Wrapping in a dictionary fixes the "Illegal Character" (Array) error
+final_json_structure = {
+    "stations": sorted_prices_list
+}
+
+# Save the final synced data
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
-    # Use indent=2 to make the JSON file readable if you check it on GitHub
-    json.dump(sorted_prices_list, f, indent=2)
+    json.dump(final_json_structure, f, indent=2)
 
-print(f"Final Sorted Outcome: {json.dumps(sorted_prices_list, indent=2)}")
+print(f"Final Outcome: {json.dumps(final_json_structure, indent=2)}")
