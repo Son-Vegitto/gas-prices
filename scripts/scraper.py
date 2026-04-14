@@ -1,7 +1,7 @@
 import os
 import json
 import asyncio
-from gasbuddy import GasBuddy
+from py_gasbuddy import GasBuddy # Changed from gasbuddy to py_gasbuddy
 
 async def main():
     # Your station IDs
@@ -17,15 +17,15 @@ async def main():
     for name, s_id in station_ids.items():
         try:
             print(f"Fetching data for {name}...")
-            # This fetches the full station object
+            # Fetch the station data
             station = await gb.get_station(s_id)
             
-            # Navigate the station object to find Regular fuel
             regular_price = "N/A"
-            if station.prices:
+            # Check if prices exist in the returned object
+            if station and station.prices:
                 for fuel in station.prices:
                     if fuel.fuel_type == "Regular":
-                        # Get the credit price, fall back to cash if credit isn't listed
+                        # Get credit or cash price
                         price_val = fuel.credit_price or fuel.cash_price
                         if price_val:
                             regular_price = f"${price_val}"
@@ -37,12 +37,12 @@ async def main():
             print(f"Error fetching {name}: {e}")
             prices[name] = "Error"
 
-    # Save the final file
+    # Save the file
     os.makedirs('public', exist_ok=True)
     with open('public/gas_prices.json', 'w') as f:
         json.dump(prices, f)
     
-    print(f"Saved: {prices}")
+    print(f"Final results: {prices}")
 
 if __name__ == "__main__":
     asyncio.run(main())
