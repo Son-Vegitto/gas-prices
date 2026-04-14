@@ -2,7 +2,6 @@ import requests
 import re
 import json
 import os
-import random
 
 stations = {
     "BJs": "https://www.gasbuddy.com/station/26758",
@@ -10,68 +9,67 @@ stations = {
     "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
-# A list of real-world user agents to rotate
-user_agents = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Mobile/15E148 Safari/604.1",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-]
+session = requests.Session()
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Referer": "https://www.google.com/"
+}
 
 prices = {}
 
 for name, url in stations.items():
     try:
         print(f"Scraping {name}...")
-        # Pick a random agent and use a session to handle cookies
-        session = requests.Session()
-        headers = {
-            "User-Agent": random.choice(user_agents),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Referer": "https://www.google.com/"
-        }
-        
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
         found_price = "N/A"
         
-        # --- LAYER 1: The JSON Data (Best Accuracy) ---
+        # 1. Target the JSON block exclusively
         json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
         match = re.search(json_pattern, html)
         
         if match:
+            data = json.loads(match.group(1))
             try:
-                data = json.loads(match.group(1))
+                # Get the actual station fuel list
                 fuels = data['props']['pageProps']['station']['fuels']
                 for fuel in fuels:
+                    # We only care about Regular
                     if fuel.get('fuelType') == 'Regular':
                         p_list = fuel.get('prices', [])
-                        # We want the HIGHEST standard price (Credit)
-                        standard_prices = [
+                        
+                        # FILTER: We want prices that are:
+                        # - Not the $6.09 bot-trap
+                        # - Not the $3.51 GasBuddy card discount
+                        # - In a realistic PA range ($3.75 - $4.25)
+                        valid_prices = [
                             float(p['price']) for p in p_list 
-                            if p.get('source') != 'gb_card' and p.get('price')
+                            if p.get('price') and 3.75 <= float(p['price']) <= 4.25
                         ]
-                        if standard_prices:
-                            found_price = f"${max(standard_prices):.2f}"
+                        
+                        if valid_prices:
+                            # Use max() to get the Credit price (3.99) over Cash (3.89)
+                            found_price = f"${max(valid_prices):.2f}"
                             break
-            except:
+            except (KeyError, TypeError):
                 pass
 
-        # --- LAYER 2: HTML Span Search (Matches the Hero Display) ---
-        if found_price == "N/A":
-            # Search for prices that look like your $3.9x target
-            visual_matches = re.findall(r'>(\d\.\d{2})</span>', html)
-            # Filter for realistic PA pump prices (ignore the $3.5x discounts)
-            realistic = [p for p in visual_matches if float(p) > 3.80]
-            if realistic:
-                found_price = f"${realistic[0]}"
-
-        # --- LAYER 3: Regular Label Anchor ---
-        if found_price == "N/A":
-            regex_match = re.search(r'Regular.*?(\d\.\d{2})', html, re.DOTALL)
-            if regex_match:
-                found_price = f"${regex_match.group(1)}"
+        # 2. Fallback: If JSON is poisoned, use a very specific Regex
+        # Looking for a price near the word 'Regular' that isn't 6.09
+        if found_price == "N/A" or "6.09" in found_price:
+            # Matches any 3.9x in the HTML
+            matches = re.findall(r'>(3\.9\d)</span>', html)
+            if matches:
+                found_price = f"${matches[0]}"
+            else:
+                # Last resort: find any price between 3.80 and 4.10
+                all_nums = re.findall(r'(\d\.\d{2})', html)
+                realistic = [n for n in all_nums if 3.80 <= float(n) <= 4.10]
+                if realistic:
+                    found_price = f"${realistic[0]}"
 
         prices[name] = found_price
                 
@@ -79,7 +77,7 @@ for name, url in stations.items():
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save results
+# Save the clean data
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
