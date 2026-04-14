@@ -22,6 +22,7 @@ for name, url in stations.items():
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
+        # 1. Grab the JSON data blob
         json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
         match = re.search(json_pattern, html)
         
@@ -30,34 +31,38 @@ for name, url in stations.items():
         if match:
             data = json.loads(match.group(1))
             try:
+                # Target: pageProps -> station -> fuels
                 fuels = data['props']['pageProps']['station']['fuels']
                 for fuel in fuels:
                     if fuel.get('fuelType') == 'Regular':
                         p_list = fuel.get('prices', [])
-                        # We want the price that is NOT the 'Pay with GasBuddy' price
-                        # Often the standard price has a specific flag or is just the largest
-                        valid_pump_prices = []
-                        for p_entry in p_list:
-                            p_val = p_entry.get('price')
-                            # Ignore specific discounted prices if they are marked
-                            # Or if they are significantly lower than others
-                            if p_val:
-                                valid_pump_prices.append(float(p_val))
-                        
-                        if valid_pump_prices:
-                            # Standard pump price is almost always the HIGHEST of the regular options
-                            # (Discounted card prices are lower)
-                            found_price = f"${max(valid_pump_prices)}"
-                            break
+                        # Standard pump price is usually the last one in the list 
+                        # or the one with the highest value (non-discounted)
+                        vals = [float(p['price']) for p in p_list if p.get('price')]
+                        if vals:
+                            # We want the highest realistic price to avoid 'Member' discounts
+                            # Filter out anything above $5.50 (likely premium/diesel errors)
+                            realistic = [v for v in vals if v < 5.50]
+                            if realistic:
+                                found_price = f"${max(realistic):.2f}"
+                                break
             except (KeyError, TypeError):
                 pass
 
-        # Safety Fallback: Use the 'Max Price' rule in the $3.50-$4.50 range
+        # 2. Strict Fallback: Only match numbers with TWO decimal places (X.XX)
+        # This prevents us from grabbing ratings like "4.5"
         if found_price == "N/A":
-            all_prices = re.findall(r'(\d\.\d{2})', html)
-            valid = [float(p) for p in all_prices if 3.50 <= float(p) <= 4.50]
-            if valid:
-                found_price = f"${max(valid)}"
+            # Regex looking for a price followed by the word 'Regular'
+            # or a price inside a 'price' JSON key
+            strict_matches = re.findall(r'"price":(\d\.\d{2})', html)
+            if not strict_matches:
+                strict_matches = re.findall(r'>(\d\.\d{2})</span>', html)
+            
+            if strict_matches:
+                # Filter for NJ price range ($3.00 - $4.50)
+                valid = [float(p) for p in strict_matches if 3.00 <= float(p) <= 4.50]
+                if valid:
+                    found_price = f"${max(valid):.2f}"
 
         prices[name] = found_price
                 
