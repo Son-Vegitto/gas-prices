@@ -14,12 +14,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.13' # Updated to latest requirement
           
       - name: Install dependencies
-        # cloudscraper helps avoid getting blocked by GasBuddy
-        run: pip install py-gasbuddy beautifulsoup4 cloudscraper
-        
+        run: |
+          pip install py-gasbuddy
+          
       - name: Run Scraper
         run: python scripts/scraper.py
         
