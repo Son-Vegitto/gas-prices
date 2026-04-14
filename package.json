@@ -4,8 +4,5 @@
   "type": "module",
   "scripts": {
     "update": "node scripts/updateGas.js"
-  },
-  "dependencies": {
-    "playwright": "^1.42.0"
   }
 }
