@@ -1,1 +1,14 @@
-{"BJs": "$3.95", "Jacks": "$3.99", "Lukoil": "$3.92"}
+[
+  {
+    "name": "Lukoil",
+    "price": "$3.92"
+  },
+  {
+    "name": "BJs",
+    "price": "$3.95"
+  },
+  {
+    "name": "Jacks",
+    "price": "$3.99"
+  }
+]
