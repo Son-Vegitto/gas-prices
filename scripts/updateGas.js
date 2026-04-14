@@ -6,19 +6,19 @@ const STATIONS = [
   { 
     id: "7072", 
     url: "https://www.getupside.com/locations/pa/souderton/", 
-    address: "681 E Broad St", 
+    matchers: ["681 E Broad", "Lukoil"], 
     name: "Lukoil (Souderton)" 
   },
   { 
     id: "33030", 
     url: "https://www.getupside.com/locations/pa/bethlehem/", 
-    address: "3010 Schoenersville Rd", 
+    matchers: ["3010 Schoenersville", "Jack's", "Jacks"], 
     name: "Jack's Food Mart (Bethlehem)" 
   },
   { 
     id: "26758", 
     url: "https://www.getupside.com/locations/pa/allentown/", 
-    address: "1785 Airport Rd", 
+    matchers: ["1785 Airport", "BJ's", "BJs"], 
     name: "BJ's (Allentown)" 
   }
 ];
@@ -40,15 +40,19 @@ async function fetchFromUpside(station) {
     const $ = load(html);
     let foundPrice = "N/A";
 
-    // Upside lists stations in rows or cards. We look for the specific address.
-    $("div, li, tr").each((_, el) => {
-        const text = $(el).text();
-        if (text.includes(station.address)) {
-            // Find the price (usually a large number in a span or div)
+    // Scan every text block (div, li, tr) for our keywords
+    $("div, li, tr, td").each((_, el) => {
+        const text = $(el).text().trim();
+        
+        // Check if this block contains any of our matching keywords
+        const isMatch = station.matchers.some(m => text.toLowerCase().includes(m.toLowerCase()));
+        
+        if (isMatch) {
+            // Look for a price format (X.XX) nearby in this block
             const priceMatch = text.match(/\d\.\d{2}/);
             if (priceMatch) {
                 foundPrice = `$${priceMatch[0]}`;
-                return false;
+                return false; // Found it!
             }
         }
     });
@@ -75,7 +79,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Final JSON:", payload);
+  console.log("Final JSON produced.");
 }
 
 main();
