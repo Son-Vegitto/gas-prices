@@ -27,6 +27,9 @@ jobs:
 
       - name: Update Gas Prices
         run: node scripts/updateGas.js
+        env:
+          # This maps the GitHub Secret to an Environment Variable
+          WEB_SCRAPING_AI_KEY: ${{ secrets.WEB_SCRAPING_AI_KEY }}
 
       - name: Commit changes
         run: |
