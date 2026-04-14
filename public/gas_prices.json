@@ -1,0 +1,20 @@
+{
+  "updated": "4/13/2026, 8:46:57 PM",
+  "stations": [
+    {
+      "id": "7072",
+      "name": "Lukoil in Souderton (681 E Broad St)",
+      "price": "N/A"
+    },
+    {
+      "id": "33030",
+      "name": "Jacks Food Mart in Bethlehem (2960 Linden St)",
+      "price": "N/A"
+    },
+    {
+      "id": "26758",
+      "name": "BJ's in Allentown (1785 Airport Rd)",
+      "price": "N/A"
+    }
+  ]
+}
