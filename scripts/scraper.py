@@ -4,67 +4,38 @@ import json
 import os
 
 stations = {
-    "BJs": "https://www.gasbuddy.com/station/26758",
-    "Jacks": "https://www.gasbuddy.com/station/33030",
-    "Lukoil": "https://www.gasbuddy.com/station/7072"
+    "BJs": "https://www.google.com/search?q=BJs+Gas+Parsippany+NJ+gasbuddy+regular+price",
+    "Jacks": "https://www.google.com/search?q=Jacks+Food+Mart+Parsippany+NJ+gasbuddy+regular+price",
+    "Lukoil": "https://www.google.com/search?q=Lukoil+Parsippany+NJ+US-46+gasbuddy+regular+price"
 }
 
-session = requests.Session()
+# Standard headers to look like a desktop browser
 headers = {
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
 
 prices = {}
 
 for name, url in stations.items():
     try:
-        print(f"Scraping {name}...")
-        response = session.get(url, headers=headers, timeout=15)
+        print(f"Checking Google for {name} price...")
+        response = requests.get(url, headers=headers, timeout=15)
         html = response.text
 
-        # 1. Grab the JSON data blob
-        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-        match = re.search(json_pattern, html)
-        
-        found_price = "N/A"
+        # Search for a price pattern like "$3.92" or "3.92" 
+        # specifically in a context that looks like a search snippet.
+        # We look for a 3 followed by a dot and two digits.
+        match = re.search(r'\$(\d\.\d{2})', html)
         
         if match:
-            data = json.loads(match.group(1))
-            try:
-                # Target: pageProps -> station -> fuels
-                fuels = data['props']['pageProps']['station']['fuels']
-                for fuel in fuels:
-                    if fuel.get('fuelType') == 'Regular':
-                        p_list = fuel.get('prices', [])
-                        # Standard pump price is usually the last one in the list 
-                        # or the one with the highest value (non-discounted)
-                        vals = [float(p['price']) for p in p_list if p.get('price')]
-                        if vals:
-                            # We want the highest realistic price to avoid 'Member' discounts
-                            # Filter out anything above $5.50 (likely premium/diesel errors)
-                            realistic = [v for v in vals if v < 5.50]
-                            if realistic:
-                                found_price = f"${max(realistic):.2f}"
-                                break
-            except (KeyError, TypeError):
-                pass
-
-        # 2. Strict Fallback: Only match numbers with TWO decimal places (X.XX)
-        # This prevents us from grabbing ratings like "4.5"
-        if found_price == "N/A":
-            # Regex looking for a price followed by the word 'Regular'
-            # or a price inside a 'price' JSON key
-            strict_matches = re.findall(r'"price":(\d\.\d{2})', html)
-            if not strict_matches:
-                strict_matches = re.findall(r'>(\d\.\d{2})</span>', html)
-            
-            if strict_matches:
-                # Filter for NJ price range ($3.00 - $4.50)
-                valid = [float(p) for p in strict_matches if 3.00 <= float(p) <= 4.50]
-                if valid:
-                    found_price = f"${max(valid):.2f}"
-
-        prices[name] = found_price
+            prices[name] = f"${match.group(1)}"
+        else:
+            # Fallback for when the $ sign isn't there
+            match_no_dollar = re.search(r'\s(\d\.\d{2})\s', html)
+            if match_no_dollar:
+                prices[name] = f"${match_no_dollar.group(1)}"
+            else:
+                prices[name] = "N/A"
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
