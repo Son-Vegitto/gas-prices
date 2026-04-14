@@ -1,7 +1,7 @@
 import cloudscraper
-import re
 import json
 import os
+import re
 
 stations = {
     "BJs": "https://www.gasbuddy.com/station/26758",
@@ -9,7 +9,6 @@ stations = {
     "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
-# Create scraper with a real browser fingerprint
 scraper = cloudscraper.create_scraper(
     browser={
         'browser': 'chrome',
@@ -25,27 +24,47 @@ for name, url in stations.items():
         print(f"Scraping {name}...")
         response = scraper.get(url, timeout=15)
         
-        # Look for the price pattern (e.g., 3.45) followed by the regular gas label
-        # This regex looks for the dollar amount near the text "Regular"
-        match = re.search(r'(\d\.\d{2})</span>[^>]*>Regular', response.text)
+        # 1. Try to find the JSON data blob hidden in the page
+        # This is where GasBuddy stores the data before the page even loads
+        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+        match = re.search(json_pattern, response.text)
+        
+        found_price = "N/A"
         
         if match:
-            prices[name] = f"${match.group(1)}"
-        else:
-            # Fallback: Look for the JSON data blob we tried earlier
-            match_json = re.search(r'"fuelType":"Regular","prices":\[{"price":(\d\.\d{2})', response.text)
-            if match_json:
-                prices[name] = f"${match_json.group(1)}"
-            else:
-                prices[name] = "N/A"
+            data = json.loads(match.group(1))
+            # Dig through the nested JSON structure
+            # pageProps -> station -> fuels
+            try:
+                fuels = data['props']['pageProps']['station']['fuels']
+                for fuel in fuels:
+                    if fuel.get('fuelType', '').lower() == 'regular':
+                        price_list = fuel.get('prices', [])
+                        if price_list:
+                            # Use the first available price
+                            val = price_list[0].get('price')
+                            if val:
+                                found_price = f"${val}"
+                                break
+            except KeyError:
+                pass
+        
+        # 2. Safety Fallback: if JSON fails, look for any price-like number
+        # near the text "Regular" anywhere in the page
+        if found_price == "N/A":
+            fallback_match = re.search(r'(\d\.\d{2}).{1,50}Regular', response.text, re.IGNORECASE)
+            if fallback_match:
+                found_price = f"${fallback_match.group(1)}"
+
+        prices[name] = found_price
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save results
+# Save to the public folder for GitHub Pages / Raw access
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
 
-print(f"Success: {prices}")
+print(f"Final Outcome: {prices}")
