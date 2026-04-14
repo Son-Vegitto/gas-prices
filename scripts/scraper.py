@@ -22,28 +22,41 @@ for name, url in stations.items():
         response = session.get(url, headers=headers, timeout=15)
         html = response.text
 
-        # 1. Target the 'Regular' price specifically within the JSON data
-        # We look for "Regular" and then grab the FIRST "price":X.XX that follows it
-        # This prevents us from grabbing the Premium ($5.XX) prices
-        regular_block = re.search(r'"fuelType":"Regular".*?"price":(\d\.\d{2})', html)
+        # 1. Extract the raw JSON data blob
+        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+        match = re.search(json_pattern, html)
         
-        if regular_block:
-            prices[name] = f"${regular_block.group(1)}"
-        else:
-            # Fallback: Look for "Regular" in the visual HTML and grab the number immediately before it
-            # GasBuddy visual layout often puts the price then the label
-            visual_match = re.search(r'>(\d\.\d{2})</span>[^>]*>Regular', html)
-            if visual_match:
-                prices[name] = f"${visual_match.group(1)}"
-            else:
-                # Last resort: find all prices and take the SMALLEST one
-                # (Regular is almost always the cheapest)
-                all_prices = re.findall(r'(\d\.\d{2})', html)
-                valid = [float(p) for p in all_prices if 2.50 < float(p) < 6.00]
-                if valid:
-                    prices[name] = f"${min(valid)}"
-                else:
-                    prices[name] = "N/A"
+        found_price = "N/A"
+        
+        if match:
+            data = json.loads(match.group(1))
+            try:
+                # Digging into the actual station data structure
+                fuels = data['props']['pageProps']['station']['fuels']
+                for fuel in fuels:
+                    # We only want Regular
+                    if fuel.get('fuelType') == 'Regular':
+                        # Get the 'prices' list
+                        p_list = fuel.get('prices', [])
+                        if p_list:
+                            # Use the real price, not the 'pay with card' price
+                            val = p_list[0].get('price')
+                            if val:
+                                found_price = f"${val}"
+                                break
+            except (KeyError, TypeError):
+                pass
+
+        # 2. Safety Fallback: If JSON is scrambled, use the 'Min Price' rule 
+        # but exclude known decoy numbers like 2.55
+        if found_price == "N/A" or found_price == "$2.55":
+            all_prices = re.findall(r'(\d\.\d{2})', html)
+            # Filter for realistic NJ prices (between $3.50 and $4.50)
+            valid = [float(p) for p in all_prices if 3.50 <= float(p) <= 4.50]
+            if valid:
+                found_price = f"${min(valid)}"
+
+        prices[name] = found_price
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
