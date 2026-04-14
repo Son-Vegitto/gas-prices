@@ -8,9 +8,12 @@ stations = {
     "Lukoil": "7072"
 }
 
+# We need more specific headers to satisfy GasBuddy's security
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-    "Content-Type": "application/json"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "x-gasbuddy-client-id": "GASBUDDY_WEB",
 }
 
 prices = {}
@@ -20,46 +23,50 @@ for name, station_id in stations.items():
         print(f"Polling GasBuddy GraphQL API for {name}...")
         url = "https://www.gasbuddy.com/graphql"
         
-        # This is the exact query GasBuddy's own website uses to ask the database for prices
+        # This expanded query specifically asks for the 'Regular' fuel type (fuelTypeId: 1)
         payload = {
             "operationName": "GetStation",
             "variables": {"id": str(station_id)},
-            "query": "query GetStation($id: ID!) { station(id: $id) { prices { credit { price } cash { price } } } }"
+            "query": """
+            query GetStation($id: ID!) {
+              station(id: $id) {
+                prices {
+                  fuelProduct
+                  credit {
+                    price
+                  }
+                  cash {
+                    price
+                  }
+                }
+              }
+            }
+            """
         }
         
-        # We use a POST request to hit their API
         response = requests.post(url, headers=headers, json=payload, timeout=15)
         
         if response.status_code == 200:
             data = response.json()
+            station_data = data.get('data', {}).get('station', {})
             
-            try:
-                # Navigate through the JSON response to find the prices list
-                station_data = data.get('data', {}).get('station', {})
-                
-                if station_data and station_data.get('prices'):
-                    # The first item in the prices list typically corresponds to 'Regular'
-                    regular_price_data = station_data['prices'][0]
-                    
-                    price_val = None
-                    
-                    # Try to grab the credit price first, fallback to cash price
-                    if regular_price_data.get('credit') and regular_price_data['credit'].get('price'):
-                        price_val = regular_price_data['credit']['price']
-                    elif regular_price_data.get('cash') and regular_price_data['cash'].get('price'):
-                        price_val = regular_price_data['cash']['price']
-                        
-                    if price_val:
-                        prices[name] = f"${price_val}"
-                    else:
-                        prices[name] = "N/A"
-                else:
-                    prices[name] = "N/A"
-            except (KeyError, IndexError, TypeError):
-                prices[name] = "Parse Error"
+            if station_data and 'prices' in station_data:
+                # Loop through products to find "Regular" (usually product 1)
+                regular_price = "N/A"
+                for p in station_data['prices']:
+                    if p.get('fuelProduct') == 'Regular':
+                        # Prefer credit price, then cash
+                        val = p.get('credit', {}).get('price') or p.get('cash', {}).get('price')
+                        if val:
+                            regular_price = f"${val}"
+                        break
+                prices[name] = regular_price
+            else:
+                prices[name] = "N/A"
         else:
             print(f"Failed to fetch {name}: HTTP {response.status_code}")
-            prices[name] = f"HTTP Error"
+            print(f"Response: {response.text}") # This will show us why it failed in the logs
+            prices[name] = "HTTP Error"
 
     except Exception as e:
         print(f"Error at {name}: {e}")
