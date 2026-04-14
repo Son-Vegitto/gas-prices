@@ -21,7 +21,7 @@ jobs:
         run: pip install beautifulsoup4 cloudscraper 
         
       - name: Run Scraper
-        run: python scraper.py
+        run: python scripts/scraper.py
         
       - name: Commit and Push
         run: |
