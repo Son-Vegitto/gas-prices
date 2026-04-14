@@ -14,7 +14,7 @@ async function fetchWithAPI(station) {
   try {
     console.log(`Fetching ${station.name}...`);
     
-    // WebScraping.ai handles the headers and proxies for us
+    // Residential proxy is key here
     const apiUrl = `https://api.webscraping.ai/html?api_key=${API_KEY}&url=${encodeURIComponent(station.url)}&proxy_type=residential`;
     
     const res = await fetch(apiUrl);
@@ -22,11 +22,29 @@ async function fetchWithAPI(station) {
     
     const html = await res.text();
     
-    // Search the HTML for the price pattern
-    const priceMatch = html.match(/\$(\d\.\d{2})/) || html.match(/\"price\":\"(\d\.\d{2})\"/);
-    const price = priceMatch ? `$${priceMatch[1]}` : "N/A";
+    // Regex Strategy 1: Look for the specific price class/schema used by GasBuddy
+    // It often looks like: "price":"3.49" or >$3.49</span>
+    const regexList = [
+      /\"price\"\:\"(\d\.\d{2})\"/,             // JSON-LD schema
+      /itemprop=\"price\" content=\"(\d\.\d{2})\"/, // Microdata
+      /\$(\d\.\d{2})/,                         // Standard $X.XX
+      /Price-module__price___[\w\d]+\">(\d\.\d{2})</ // React module class
+    ];
 
-    return { id: station.id, name: station.name, price };
+    let foundPrice = "N/A";
+
+    for (const regex of regexList) {
+      const match = html.match(regex);
+      if (match && match[1]) {
+        foundPrice = `$${match[1]}`;
+        break; 
+      } else if (match && match[0].startsWith('$')) {
+        foundPrice = match[0]; // For the standard $X.XX match
+        break;
+      }
+    }
+
+    return { id: station.id, name: station.name, price: foundPrice };
   } catch (err) {
     console.error(`Error on ${station.name}:`, err.message);
     return { id: station.id, name: station.name, price: "N/A" };
@@ -37,8 +55,7 @@ async function main() {
   const results = [];
   for (const s of STATIONS) {
     results.push(await fetchWithAPI(s));
-    // Brief pause between requests
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 1500));
   }
 
   const payload = {
@@ -48,7 +65,7 @@ async function main() {
 
   if (!fs.existsSync("public")) fs.mkdirSync("public", { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 2));
-  console.log("Updated data:", JSON.stringify(payload, null, 2));
+  console.log("Results Found:", JSON.stringify(payload, null, 2));
 }
 
 main();
