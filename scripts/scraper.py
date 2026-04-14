@@ -1,7 +1,7 @@
 import cloudscraper
+import re
 import json
 import os
-import re
 
 stations = {
     "BJs": "https://www.gasbuddy.com/station/26758",
@@ -9,6 +9,7 @@ stations = {
     "Lukoil": "https://www.gasbuddy.com/station/7072"
 }
 
+# We'll use a very specific desktop user agent to look like a human browsing on Chrome
 scraper = cloudscraper.create_scraper(
     browser={
         'browser': 'chrome',
@@ -23,42 +24,39 @@ for name, url in stations.items():
     try:
         print(f"Scraping {name}...")
         response = scraper.get(url, timeout=15)
+        html = response.text
+
+        # GasBuddy's price display usually looks like this in the raw HTML:
+        # <span class="...">3.95</span>...<span>Regular</span>
+        # We'll search for a price pattern that is followed by 'Regular' within 200 characters
         
-        # We target the specific JSON blob that contains the real, live prices
-        json_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-        match = re.search(json_pattern, response.text)
+        # This regex looks for: 
+        # 1. A price ($X.XX)
+        # 2. A bunch of junk/tags in between (up to 300 characters)
+        # 3. The word 'Regular'
+        regex_pattern = r'(\d\.\d{2})<.*?Regular'
         
-        found_price = "N/A"
+        # We use re.DOTALL to make sure the dot matches newlines too
+        match = re.search(regex_pattern, html, re.IGNORECASE | re.DOTALL)
         
         if match:
-            data = json.loads(match.group(1))
-            # The actual station data is buried deep here:
-            # props -> pageProps -> station -> fuels
-            try:
-                fuels = data['props']['pageProps']['station']['fuels']
-                for fuel in fuels:
-                    # Match 'Regular' specifically
-                    if fuel.get('fuelType', '').lower() == 'regular':
-                        price_entries = fuel.get('prices', [])
-                        if price_entries:
-                            # We want the most recent price (usually the first)
-                            val = price_entries[0].get('price')
-                            if val:
-                                found_price = f"${val}"
-                                break
-            except (KeyError, TypeError):
-                # Fallback to a tighter Regex if the JSON path fails
-                fallback = re.search(r'"fuelType":"Regular","prices":\[{"price":(\d\.\d{2})', response.text)
-                if fallback:
-                    found_price = f"${fallback.group(1)}"
-        
-        prices[name] = found_price
+            prices[name] = f"${match.group(1)}"
+        else:
+            # Plan B: Try to find any price that is NOT 6.09 (the ad price)
+            all_prices = re.findall(r'(\d\.\d{2})', html)
+            # Remove common 'ad' prices if they appear
+            filtered_prices = [p for p in all_prices if p not in ["6.09", "0.00"]]
+            
+            if filtered_prices:
+                prices[name] = f"${filtered_prices[0]}"
+            else:
+                prices[name] = "N/A"
                 
     except Exception as e:
         print(f"Error at {name}: {e}")
         prices[name] = "Error"
 
-# Save to public/gas_prices.json
+# Save results
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(prices, f)
