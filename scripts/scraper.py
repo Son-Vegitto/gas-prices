@@ -18,18 +18,23 @@ async def main():
         try:
             print(f"Fetching {name} (ID: {s_id})...")
             
-            # The library method name is now get_station_and_prices
-            # It returns a station object with a 'prices' list
-            station = await gb.get_station_and_prices(s_id)
+            # TRY 1: The standard 2026 method
+            try:
+                station = await gb.get_station(s_id)
+            except AttributeError:
+                # TRY 2: Fallback if the library is in a transitional state
+                print(f"Method not found, trying search fallback...")
+                station = await gb.get_station_details(s_id)
             
             regular_price = "N/A"
             
-            if station and station.prices:
-                # The library organizes these by fuel type
+            if station and hasattr(station, 'prices') and station.prices:
                 for p in station.prices:
-                    if p.fuel_type.lower() == "regular":
-                        # Some stations report cash vs credit; we'll take credit first
-                        val = p.credit_price or p.cash_price
+                    # Look for Regular (checking both .fuel_type and .fuel)
+                    fuel_name = getattr(p, 'fuel_type', getattr(p, 'fuel', '')).lower()
+                    if fuel_name == "regular":
+                        # Get credit or cash
+                        val = getattr(p, 'credit_price', getattr(p, 'price', None)) or getattr(p, 'cash_price', None)
                         if val:
                             regular_price = f"${val}"
                         break
@@ -38,6 +43,8 @@ async def main():
             
         except Exception as e:
             print(f"Error fetching {name}: {str(e)}")
+            # This will help us debug if the method name changed again
+            print(f"Available methods in gb object: {dir(gb)}")
             prices[name] = "Error"
 
     # Save to public/gas_prices.json
@@ -49,3 +56,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
