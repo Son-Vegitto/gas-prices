@@ -15,6 +15,15 @@ stations = {
     "BJs": "26758",
     "Jacks": "33030",
     "Raceway": "33823",
+    "Weis": "204059",
+    "Gulf": "41828",
+    "Gulf": "33011",
+    "Jollys": "33913",
+    "Wawa": "210827",
+    "Wawa": "75991",
+    "Sheetz": "31735",
+    "Wawa": "67982",
+    "Taylor": "31737",
     "Speedway": "16010",
     "Lukoil": "7072"
 }
