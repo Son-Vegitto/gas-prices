@@ -60,7 +60,7 @@ for name, station_id in stations.items():
 
 driver.quit()
 
-# 3. Sorting Logic
+# 3. Sorting & Dynamic Image Logic
 def sort_by_price(item):
     price_str = item[1]
     try:
@@ -69,7 +69,18 @@ def sort_by_price(item):
         return float('inf')
 
 sorted_items = sorted(prices.items(), key=sort_by_price)
-sorted_rows = [{"name": name, "price": price} for name, price in sorted_items]
+
+# This URL matches your Son-Vegitto/gas-prices repository
+base_img_url = "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/"
+
+sorted_rows = [
+    {
+        "name": name, 
+        "price": price, 
+        "flag": f"{base_img_url}{name.lower()}.png" 
+    } 
+    for name, price in sorted_items
+]
 
 # 4. Timezone Correction (EST is UTC-4)
 est_now = datetime.now(timezone(timedelta(hours=-4)))
