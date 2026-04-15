@@ -1,17 +1,22 @@
 {
-  "last_updated": "2026-04-15 12:06 AM",
+  "updatedAt": "14-Apr-2026 09:33 PM",
+  "source": "GasBuddy",
+  "isLiveData": true,
   "rows": [
     {
       "name": "BJs",
-      "price": "$3.95"
+      "price": "$3.95",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png"
     },
     {
       "name": "Jacks",
-      "price": "$3.99"
+      "price": "$3.99",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jacks.png"
     },
     {
       "name": "Lukoil",
-      "price": "$3.99"
+      "price": "$3.99",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png"
     }
   ]
 }
