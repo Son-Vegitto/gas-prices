@@ -60,7 +60,7 @@ for name, station_id in stations.items():
 
 driver.quit()
 
-# 3. Sorting & Dynamic Image Logic
+# 3. Sorting & Dynamic Logo Logic
 def sort_by_price(item):
     price_str = item[1]
     try:
@@ -70,14 +70,14 @@ def sort_by_price(item):
 
 sorted_items = sorted(prices.items(), key=sort_by_price)
 
-# This URL matches your Son-Vegitto/gas-prices repository
+# Base URL for station logos hosted on GitHub
 base_img_url = "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/"
 
 sorted_rows = [
     {
         "name": name, 
         "price": price, 
-        "flag": f"{base_img_url}{name.lower()}.png" 
+        "logo": f"{base_img_url}{name.lower()}.png" 
     } 
     for name, price in sorted_items
 ]
@@ -86,7 +86,7 @@ sorted_rows = [
 est_now = datetime.now(timezone(timedelta(hours=-4)))
 timestamp = est_now.strftime("%d-%b-%Y %I:%M %p")
 
-# 5. Final Olympic-Style Structure
+# 5. Final Structured Output
 final_output = {
     "updatedAt": timestamp,
     "source": "GasBuddy",
