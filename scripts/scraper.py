@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from datetime import datetime, timedelta, timezone
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -63,26 +64,28 @@ driver.quit()
 def sort_by_price(item):
     price_str = item[1]
     try:
-        # Convert "$3.15" to float 3.15 for sorting
         return float(price_str.replace('$', ''))
     except ValueError:
-        # Push N/A to the end
         return float('inf')
 
 sorted_items = sorted(prices.items(), key=sort_by_price)
-
-# 4. Format for KWGT (Mimicking Olympic Project Structure)
-# This creates a list of dictionaries inside the 'rows' key
 sorted_rows = [{"name": name, "price": price} for name, price in sorted_items]
 
+# 4. Timezone Correction (EST is UTC-4)
+est_now = datetime.now(timezone(timedelta(hours=-4)))
+timestamp = est_now.strftime("%d-%b-%Y %I:%M %p")
+
+# 5. Final Olympic-Style Structure
 final_output = {
-    "last_updated": time.strftime("%Y-%m-%d %I:%M %p"),
+    "updatedAt": timestamp,
+    "source": "GasBuddy",
+    "isLiveData": True,
     "rows": sorted_rows
 }
 
-# 5. Save to File
+# 6. Save to File
 os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(final_output, f, indent=2)
 
-print(f"File updated successfully. Structure: {json.dumps(final_output, indent=2)}")
+print(f"File updated for EST. Timestamp: {timestamp}")
