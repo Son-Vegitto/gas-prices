@@ -15,6 +15,7 @@ stations = {
     "BJs": "26758",
     "Jacks": "33030",
     "Raceway": "33823",
+    "Speedway": "16010",
     "Lukoil": "7072"
 }
 
