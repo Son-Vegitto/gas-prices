@@ -10,19 +10,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-# 1. Configuration - Reverted back to "Jacks"
+# 1. Configuration - Unique keys, but we'll "clean" them for the widget later
 stations = {
     "BJs": "26758",
     "Jacks": "33030",
     "Raceway": "33823",
-    "Weis": "204059",
-    "Gulf": "41828",
-    "Gulf": "33011",
+#   "Weis": "204059",
+    "Gulf 1": "41828",
+    "Gulf 2": "33011",
     "Jollys": "33913",
-    "Wawa": "210827",
-    "Wawa": "75991",
+    "Wawa 1": "210827",
+    "Wawa 2": "75991",
     "Sheetz": "31735",
-    "Wawa": "67982",
+    "Wawa 3": "67982",
     "Taylor": "31737",
     "Speedway": "16010",
     "Lukoil": "7072"
@@ -37,7 +37,6 @@ chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
 
-# Store both price and URL
 station_data = {}
 
 # 2. Scrape Data
@@ -75,7 +74,7 @@ for name, station_id in stations.items():
 
 driver.quit()
 
-# 3. Sorting & Dynamic Logo Logic
+# 3. Sorting & Dynamic Logo Logic (Cleaning the names here)
 def sort_by_price(item):
     price_str = item[1]["price"]
     try:
@@ -85,24 +84,25 @@ def sort_by_price(item):
 
 sorted_items = sorted(station_data.items(), key=sort_by_price)
 
-# Base URL for station logos hosted on GitHub
 base_img_url = "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/"
 
+# --- THE FIX FOR KWGT ---
+# .split(' ')[0] takes "Wawa 1" and keeps only "Wawa" for the JSON output
 sorted_rows = [
     {
-        "name": name, 
+        "name": name.split(' ')[0], 
         "price": data["price"],
-        "logo": f"{base_img_url}{name.lower()}.png",
+        "logo": f"{base_img_url}{name.split(' ')[0].lower()}.png",
         "url": data["url"]
     } 
     for name, data in sorted_items
 ]
 
-# 4. Timezone Correction (EST is UTC-4)
+# 4. Timezone Correction
 est_now = datetime.now(timezone(timedelta(hours=-4)))
 timestamp = est_now.strftime("%d-%b-%Y %I:%M %p")
 
-# 5. Final Structured Output
+# 5. Final Output
 final_output = {
     "updatedAt": timestamp,
     "source": "GasBuddy",
@@ -115,4 +115,4 @@ os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(final_output, f, indent=2)
 
-print(f"File updated for EST. Timestamp: {timestamp}")
+print(f"File updated for KWGT. Timestamp: {timestamp}")
