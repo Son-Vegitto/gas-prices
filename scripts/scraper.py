@@ -24,7 +24,8 @@ stations = {
     "Sheetz": "31735",
     "Wawa 3": "67982",
     "Taylor": "31737",
-    "Speedway": "16010",
+    "Speedway 1": "19659",
+    "Speedway 2": "16010",
     "Lukoil": "7072"
 }
 
