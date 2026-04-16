@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import random  # Added for variable delays
 from datetime import datetime, timedelta, timezone
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -10,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-# 1. Configuration - Unique keys, but we'll "clean" them for the widget later
+# 1. Configuration
 stations = {
     "BJs": "26758",
     "Jacks": "33030",
@@ -29,7 +30,6 @@ stations = {
     "Lukoil": "7072"
 }
 
-# Chrome setup for GitHub Actions
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
@@ -49,11 +49,20 @@ for name, station_id in stations.items():
         print(f"Opening GasBuddy for {name}...")
         driver.get(url)
         
-        driver.execute_script("window.scrollTo(0, 300);")
+        # Give the page a moment to load initial scripts
+        time.sleep(3) 
+        
+        # Scroll down to trigger lazy loading of the price
+        driver.execute_script("window.scrollTo(0, 400);")
+        
+        # Pause to let the price element render after the scroll
+        time.sleep(2) 
+        
         selector = "span[class*='FuelTypePriceDisplay-module__price']"
         
         try:
-            WebDriverWait(driver, 15).until(
+            # Increased timeout to 20 just in case
+            WebDriverWait(driver, 20).until(
                 EC.text_to_be_present_in_element((By.CSS_SELECTOR, selector), "$")
             )
             element = driver.find_element(By.CSS_SELECTOR, selector)
@@ -65,6 +74,7 @@ for name, station_id in stations.items():
             else:
                 price = "N/A"
         except Exception:
+            print(f"Timeout or missing price for {name}")
             price = "N/A"
 
     except Exception as e:
@@ -72,13 +82,19 @@ for name, station_id in stations.items():
         price = "N/A"
     
     station_data[name] = {"price": price, "url": url}
+    
+    # Random pause between 2-4 seconds between stations to stay under the radar
+    time.sleep(random.uniform(2, 4))
 
 driver.quit()
 
-# 3. Sorting & Dynamic Logo Logic (Cleaning the names here)
+# 3. Sorting & Dynamic Logo Logic
 def sort_by_price(item):
     price_str = item[1]["price"]
     try:
+        # Handle N/A by moving them to the bottom
+        if price_str == "N/A":
+            return float('inf')
         return float(price_str.replace('$', ''))
     except ValueError:
         return float('inf')
@@ -87,8 +103,6 @@ sorted_items = sorted(station_data.items(), key=sort_by_price)
 
 base_img_url = "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/"
 
-# --- THE FIX FOR KWGT ---
-# .split(' ')[0] takes "Wawa 1" and keeps only "Wawa" for the JSON output
 sorted_rows = [
     {
         "name": name.split(' ')[0], 
@@ -116,4 +130,4 @@ os.makedirs('public', exist_ok=True)
 with open('public/gas_prices.json', 'w') as f:
     json.dump(final_output, f, indent=2)
 
-print(f"File updated for KWGT. Timestamp: {timestamp}")
+print(f"File updated. Timestamp: {timestamp}")
