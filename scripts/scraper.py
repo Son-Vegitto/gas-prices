@@ -15,7 +15,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 stations = {
     "BJs": "26758",
     "Jacks": "33030",
-    "Raceway": "33823",
+    "Raceway 1": "33823",
+    "Raceway 2": "208024",
     "Racetrack": "26764",
 #   "Weis": "204059",
     "Gulf 1": "41828",
