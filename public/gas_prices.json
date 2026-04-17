@@ -1,5 +1,5 @@
 {
-  "updatedAt": "17-Apr-2026 07:47 AM",
+  "updatedAt": "17-Apr-2026 04:41 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -70,12 +70,6 @@
       "url": "https://www.gasbuddy.com/station/19659"
     },
     {
-      "name": "Jollys",
-      "price": "$3.92",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
-      "url": "https://www.gasbuddy.com/station/33913"
-    },
-    {
       "name": "Lukoil",
       "price": "$3.93",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
@@ -110,6 +104,12 @@
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
       "url": "https://www.gasbuddy.com/station/31737"
+    },
+    {
+      "name": "Jollys",
+      "price": "N/A",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
+      "url": "https://www.gasbuddy.com/station/33913"
     }
   ]
 }
