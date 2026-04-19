@@ -1,5 +1,5 @@
 {
-  "updatedAt": "18-Apr-2026 04:32 PM",
+  "updatedAt": "19-Apr-2026 07:32 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -26,6 +26,12 @@
       "price": "$3.87",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
       "url": "https://www.gasbuddy.com/station/33714"
+    },
+    {
+      "name": "Speedway",
+      "price": "$3.87",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/33716"
     },
     {
       "name": "Gulf",
@@ -98,12 +104,6 @@
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
       "url": "https://www.gasbuddy.com/station/31737"
-    },
-    {
-      "name": "Speedway",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/33716"
     },
     {
       "name": "Jollys",
