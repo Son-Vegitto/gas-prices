@@ -1,11 +1,11 @@
 {
-  "updatedAt": "20-Apr-2026 08:03 AM",
+  "updatedAt": "20-Apr-2026 04:41 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
     {
       "name": "BJs",
-      "price": "$3.75",
+      "price": "$3.74",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
       "url": "https://www.gasbuddy.com/station/26758"
     },
@@ -70,6 +70,12 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
+      "name": "Lukoil",
+      "price": "$3.89",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
+      "url": "https://www.gasbuddy.com/station/7072"
+    },
+    {
       "name": "Wawa",
       "price": "$3.93",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
@@ -80,12 +86,6 @@
       "price": "$3.93",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
-    },
-    {
-      "name": "Lukoil",
-      "price": "$3.93",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
-      "url": "https://www.gasbuddy.com/station/7072"
     },
     {
       "name": "Wawa",
