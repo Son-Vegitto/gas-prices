@@ -1,14 +1,8 @@
 {
-  "updatedAt": "30-Apr-2026 08:13 AM",
+  "updatedAt": "30-Apr-2026 04:56 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
-    {
-      "name": "Raceway",
-      "price": "$4.07",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
-      "url": "https://www.gasbuddy.com/station/33823"
-    },
     {
       "name": "Raceway",
       "price": "$4.08",
@@ -23,9 +17,15 @@
     },
     {
       "name": "BJs",
-      "price": "$4.12",
+      "price": "$4.16",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
       "url": "https://www.gasbuddy.com/station/26758"
+    },
+    {
+      "name": "Raceway",
+      "price": "$4.17",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
+      "url": "https://www.gasbuddy.com/station/33823"
     },
     {
       "name": "Gulf",
@@ -76,16 +76,16 @@
       "url": "https://www.gasbuddy.com/station/31737"
     },
     {
+      "name": "Speedway",
+      "price": "$4.29",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
+    },
+    {
       "name": "Sheetz",
       "price": "$4.35",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
       "url": "https://www.gasbuddy.com/station/31735"
-    },
-    {
-      "name": "Wawa",
-      "price": "$4.37",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
     },
     {
       "name": "Speedway",
@@ -106,10 +106,10 @@
       "url": "https://www.gasbuddy.com/station/67982"
     },
     {
-      "name": "Speedway",
-      "price": "$4.39",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
+      "name": "Wawa",
+      "price": "$4.49",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
     }
   ]
 }
