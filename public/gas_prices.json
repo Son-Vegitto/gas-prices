@@ -1,5 +1,5 @@
 {
-  "updatedAt": "30-Apr-2026 04:56 PM",
+  "updatedAt": "01-May-2026 07:56 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -46,22 +46,10 @@
       "url": "https://www.gasbuddy.com/station/26764"
     },
     {
-      "name": "Speedway",
-      "price": "$4.19",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/19659"
-    },
-    {
       "name": "Jollys",
       "price": "$4.24",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
       "url": "https://www.gasbuddy.com/station/33913"
-    },
-    {
-      "name": "Lukoil",
-      "price": "$4.25",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
-      "url": "https://www.gasbuddy.com/station/7072"
     },
     {
       "name": "Gulf",
@@ -97,13 +85,25 @@
       "name": "Wawa",
       "price": "$4.39",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/210827"
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
+      "name": "Lukoil",
+      "price": "$4.45",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
+      "url": "https://www.gasbuddy.com/station/7072"
+    },
+    {
+      "name": "Speedway",
+      "price": "$4.49",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/19659"
     },
     {
       "name": "Wawa",
-      "price": "$4.39",
+      "price": "$4.49",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
+      "url": "https://www.gasbuddy.com/station/210827"
     },
     {
       "name": "Wawa",
