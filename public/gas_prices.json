@@ -1,5 +1,5 @@
 {
-  "updatedAt": "06-May-2026 08:27 AM",
+  "updatedAt": "06-May-2026 05:07 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -82,6 +82,12 @@
       "url": "https://www.gasbuddy.com/station/7072"
     },
     {
+      "name": "Sheetz",
+      "price": "$4.65",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
+      "url": "https://www.gasbuddy.com/station/31735"
+    },
+    {
       "name": "Speedway",
       "price": "$4.69",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -104,12 +110,6 @@
       "price": "$4.69",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
-    },
-    {
-      "name": "Sheetz",
-      "price": "$4.69",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
-      "url": "https://www.gasbuddy.com/station/31735"
     }
   ]
 }
