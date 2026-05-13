@@ -1,5 +1,5 @@
 {
-  "updatedAt": "13-May-2026 09:10 AM",
+  "updatedAt": "13-May-2026 05:23 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -35,7 +35,7 @@
     },
     {
       "name": "Gulf",
-      "price": "$4.27",
+      "price": "$4.23",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/41828"
     },
@@ -58,6 +58,12 @@
       "url": "https://www.gasbuddy.com/station/16010"
     },
     {
+      "name": "Wawa",
+      "price": "$4.39",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Jollys",
       "price": "$4.42",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
@@ -65,9 +71,15 @@
     },
     {
       "name": "Wawa",
-      "price": "$4.45",
+      "price": "$4.49",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
+      "url": "https://www.gasbuddy.com/station/210827"
+    },
+    {
+      "name": "Wawa",
+      "price": "$4.49",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
     },
     {
       "name": "Gulf",
@@ -76,22 +88,10 @@
       "url": "https://www.gasbuddy.com/station/33011"
     },
     {
-      "name": "Wawa",
-      "price": "$4.54",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
-    },
-    {
       "name": "Speedway",
       "price": "$4.55",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/19659"
-    },
-    {
-      "name": "Wawa",
-      "price": "$4.55",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/210827"
     },
     {
       "name": "Sheetz",
