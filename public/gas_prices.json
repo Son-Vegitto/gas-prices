@@ -1,5 +1,5 @@
 {
-  "updatedAt": "15-May-2026 08:31 AM",
+  "updatedAt": "15-May-2026 04:57 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -53,7 +53,7 @@
     },
     {
       "name": "Wawa",
-      "price": "$4.39",
+      "price": "$4.37",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
     },
@@ -65,7 +65,7 @@
     },
     {
       "name": "Wawa",
-      "price": "$4.49",
+      "price": "$4.43",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/210827"
     },
