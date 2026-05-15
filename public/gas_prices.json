@@ -1,5 +1,5 @@
 {
-  "updatedAt": "14-May-2026 05:07 PM",
+  "updatedAt": "15-May-2026 08:31 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -46,12 +46,6 @@
       "url": "https://www.gasbuddy.com/station/33030"
     },
     {
-      "name": "Racetrack",
-      "price": "$4.29",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
-      "url": "https://www.gasbuddy.com/station/26764"
-    },
-    {
       "name": "Speedway",
       "price": "$4.35",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -82,6 +76,12 @@
       "url": "https://www.gasbuddy.com/station/75991"
     },
     {
+      "name": "Taylor",
+      "price": "$4.49",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
+      "url": "https://www.gasbuddy.com/station/31737"
+    },
+    {
       "name": "Speedway",
       "price": "$4.55",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -94,16 +94,16 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
-      "name": "Taylor",
-      "price": "$4.59",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
-      "url": "https://www.gasbuddy.com/station/31737"
-    },
-    {
       "name": "Lukoil",
       "price": "$4.59",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
+    },
+    {
+      "name": "Racetrack",
+      "price": "N/A",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
+      "url": "https://www.gasbuddy.com/station/26764"
     },
     {
       "name": "Gulf",
