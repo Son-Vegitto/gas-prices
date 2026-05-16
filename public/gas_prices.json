@@ -1,5 +1,5 @@
 {
-  "updatedAt": "16-May-2026 07:48 AM",
+  "updatedAt": "16-May-2026 04:43 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -64,6 +64,12 @@
       "url": "https://www.gasbuddy.com/station/67982"
     },
     {
+      "name": "Sheetz",
+      "price": "$4.42",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
+      "url": "https://www.gasbuddy.com/station/31735"
+    },
+    {
       "name": "Wawa",
       "price": "$4.43",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
@@ -71,7 +77,7 @@
     },
     {
       "name": "Wawa",
-      "price": "$4.49",
+      "price": "$4.48",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/75991"
     },
@@ -86,12 +92,6 @@
       "price": "$4.55",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/19659"
-    },
-    {
-      "name": "Sheetz",
-      "price": "$4.55",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
-      "url": "https://www.gasbuddy.com/station/31735"
     },
     {
       "name": "Lukoil",
