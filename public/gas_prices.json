@@ -1,5 +1,5 @@
 {
-  "updatedAt": "17-May-2026 04:44 PM",
+  "updatedAt": "18-May-2026 10:29 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -71,7 +71,7 @@
     },
     {
       "name": "Sheetz",
-      "price": "$4.42",
+      "price": "$4.40",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
       "url": "https://www.gasbuddy.com/station/31735"
     },
@@ -88,6 +88,12 @@
       "url": "https://www.gasbuddy.com/station/75991"
     },
     {
+      "name": "Gulf",
+      "price": "$4.49",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/33011"
+    },
+    {
       "name": "Taylor",
       "price": "$4.49",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
@@ -98,12 +104,6 @@
       "price": "$4.59",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
-    },
-    {
-      "name": "Gulf",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/33011"
     },
     {
       "name": "Jollys",
