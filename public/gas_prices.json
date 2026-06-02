@@ -1,5 +1,5 @@
 {
-  "updatedAt": "02-Jun-2026 10:50 AM",
+  "updatedAt": "02-Jun-2026 06:21 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -40,22 +40,28 @@
       "url": "https://www.gasbuddy.com/station/33714"
     },
     {
+      "name": "Speedway",
+      "price": "$3.89",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/33716"
+    },
+    {
       "name": "Gulf",
       "price": "$3.89",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/41828"
     },
     {
-      "name": "Speedway",
-      "price": "$3.94",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/33716"
-    },
-    {
       "name": "Wawa",
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
+      "name": "Speedway",
+      "price": "$3.99",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
     },
     {
       "name": "Wawa",
@@ -65,33 +71,27 @@
     },
     {
       "name": "Speedway",
-      "price": "$4.19",
+      "price": "$4.10",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
-    },
-    {
-      "name": "Wawa",
-      "price": "$4.21",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
+      "url": "https://www.gasbuddy.com/station/19659"
     },
     {
       "name": "Sheetz",
-      "price": "$4.25",
+      "price": "$4.14",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
       "url": "https://www.gasbuddy.com/station/31735"
+    },
+    {
+      "name": "Wawa",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
     },
     {
       "name": "Gulf",
       "price": "$4.25",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/33011"
-    },
-    {
-      "name": "Speedway",
-      "price": "$4.27",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/19659"
     },
     {
       "name": "Lukoil",
