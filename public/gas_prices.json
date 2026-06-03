@@ -1,5 +1,5 @@
 {
-  "updatedAt": "03-Jun-2026 11:28 AM",
+  "updatedAt": "03-Jun-2026 06:28 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -89,7 +89,7 @@
     },
     {
       "name": "Wawa",
-      "price": "$4.19",
+      "price": "$4.17",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/75991"
     },
@@ -101,7 +101,7 @@
     },
     {
       "name": "Lukoil",
-      "price": "$4.32",
+      "price": "$4.29",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
     },
