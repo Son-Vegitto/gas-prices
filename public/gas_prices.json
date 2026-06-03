@@ -1,5 +1,5 @@
 {
-  "updatedAt": "02-Jun-2026 06:21 PM",
+  "updatedAt": "03-Jun-2026 11:28 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -70,6 +70,12 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
+      "name": "Taylor",
+      "price": "$4.09",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
+      "url": "https://www.gasbuddy.com/station/31737"
+    },
+    {
       "name": "Speedway",
       "price": "$4.10",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -98,12 +104,6 @@
       "price": "$4.32",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
-    },
-    {
-      "name": "Taylor",
-      "price": "$4.39",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
-      "url": "https://www.gasbuddy.com/station/31737"
     },
     {
       "name": "Jollys",
