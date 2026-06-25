@@ -1,5 +1,5 @@
 {
-  "updatedAt": "25-Jun-2026 09:16 AM",
+  "updatedAt": "25-Jun-2026 05:28 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -10,16 +10,16 @@
       "url": "https://www.gasbuddy.com/station/26758"
     },
     {
+      "name": "Speedway",
+      "price": "$3.55",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/19659"
+    },
+    {
       "name": "Raceway",
       "price": "$3.59",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
       "url": "https://www.gasbuddy.com/station/33823"
-    },
-    {
-      "name": "Speedway",
-      "price": "$3.59",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/19659"
     },
     {
       "name": "Sheetz",
@@ -58,6 +58,12 @@
       "url": "https://www.gasbuddy.com/station/33716"
     },
     {
+      "name": "Wawa",
+      "price": "$3.65",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Speedway",
       "price": "$3.65",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -76,12 +82,6 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
-      "name": "Wawa",
-      "price": "$3.69",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
-    },
-    {
       "name": "Taylor",
       "price": "$3.79",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
@@ -89,7 +89,7 @@
     },
     {
       "name": "Lukoil",
-      "price": "$3.89",
+      "price": "$3.84",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
     },
