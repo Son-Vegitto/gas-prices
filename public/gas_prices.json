@@ -1,5 +1,5 @@
 {
-  "updatedAt": "26-Jun-2026 09:08 AM",
+  "updatedAt": "26-Jun-2026 05:17 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -22,22 +22,34 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
+      "name": "Speedway",
+      "price": "$3.58",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
+    },
+    {
       "name": "Raceway",
       "price": "$3.59",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
       "url": "https://www.gasbuddy.com/station/33823"
     },
     {
+      "name": "Wawa",
+      "price": "$3.59",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
+    },
+    {
       "name": "Gulf",
-      "price": "$3.63",
+      "price": "$3.59",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/41828"
+      "url": "https://www.gasbuddy.com/station/33011"
     },
     {
       "name": "Gulf",
       "price": "$3.63",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/33011"
+      "url": "https://www.gasbuddy.com/station/41828"
     },
     {
       "name": "Jacks",
@@ -68,18 +80,6 @@
       "price": "$3.65",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
       "url": "https://www.gasbuddy.com/station/33913"
-    },
-    {
-      "name": "Speedway",
-      "price": "$3.65",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
-    },
-    {
-      "name": "Wawa",
-      "price": "$3.66",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
     },
     {
       "name": "Wawa",
