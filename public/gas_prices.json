@@ -1,5 +1,5 @@
 {
-  "updatedAt": "29-Jun-2026 10:48 AM",
+  "updatedAt": "29-Jun-2026 05:22 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -22,10 +22,22 @@
       "url": "https://www.gasbuddy.com/station/33823"
     },
     {
+      "name": "Racetrack",
+      "price": "$3.53",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
+      "url": "https://www.gasbuddy.com/station/33714"
+    },
+    {
       "name": "Gulf",
       "price": "$3.53",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/41828"
+    },
+    {
+      "name": "Gulf",
+      "price": "$3.53",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/33011"
     },
     {
       "name": "Speedway",
@@ -58,10 +70,10 @@
       "url": "https://www.gasbuddy.com/station/67982"
     },
     {
-      "name": "Racetrack",
-      "price": "$3.59",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
-      "url": "https://www.gasbuddy.com/station/33714"
+      "name": "Speedway",
+      "price": "$3.57",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
     },
     {
       "name": "Wawa",
@@ -94,22 +106,10 @@
       "url": "https://www.gasbuddy.com/station/26764"
     },
     {
-      "name": "Gulf",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/33011"
-    },
-    {
       "name": "Jollys",
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
       "url": "https://www.gasbuddy.com/station/33913"
-    },
-    {
-      "name": "Speedway",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
     }
   ]
 }
