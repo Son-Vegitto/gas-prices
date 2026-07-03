@@ -1,5 +1,5 @@
 {
-  "updatedAt": "03-Jul-2026 08:56 AM",
+  "updatedAt": "03-Jul-2026 05:00 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -8,6 +8,12 @@
       "price": "$3.48",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
       "url": "https://www.gasbuddy.com/station/33714"
+    },
+    {
+      "name": "Speedway",
+      "price": "$3.48",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/33716"
     },
     {
       "name": "Gulf",
@@ -23,15 +29,9 @@
     },
     {
       "name": "BJs",
-      "price": "$3.52",
+      "price": "$3.51",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
       "url": "https://www.gasbuddy.com/station/26758"
-    },
-    {
-      "name": "Speedway",
-      "price": "$3.52",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/33716"
     },
     {
       "name": "Jacks",
