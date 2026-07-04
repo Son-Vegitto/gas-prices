@@ -1,5 +1,5 @@
 {
-  "updatedAt": "03-Jul-2026 05:00 PM",
+  "updatedAt": "04-Jul-2026 08:05 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -52,6 +52,12 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
+      "name": "Wawa",
+      "price": "$3.57",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Speedway",
       "price": "$3.57",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -98,12 +104,6 @@
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
       "url": "https://www.gasbuddy.com/station/208024"
-    },
-    {
-      "name": "Wawa",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
     },
     {
       "name": "Jollys",
