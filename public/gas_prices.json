@@ -1,5 +1,5 @@
 {
-  "updatedAt": "04-Aug-2026 08:57 AM",
+  "updatedAt": "04-Aug-2026 05:06 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -58,6 +58,12 @@
       "url": "https://www.gasbuddy.com/station/33913"
     },
     {
+      "name": "Wawa",
+      "price": "$3.93",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Speedway",
       "price": "$3.95",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -70,10 +76,10 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
-      "name": "Wawa",
-      "price": "$3.99",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
+      "name": "Speedway",
+      "price": "$4.09",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
     },
     {
       "name": "Lukoil",
@@ -82,10 +88,10 @@
       "url": "https://www.gasbuddy.com/station/7072"
     },
     {
-      "name": "Speedway",
-      "price": "$4.15",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
+      "name": "Sheetz",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
+      "url": "https://www.gasbuddy.com/station/31735"
     },
     {
       "name": "Taylor",
@@ -98,12 +104,6 @@
       "price": "$4.29",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/19659"
-    },
-    {
-      "name": "Sheetz",
-      "price": "$4.29",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
-      "url": "https://www.gasbuddy.com/station/31735"
     },
     {
       "name": "Racetrack",
