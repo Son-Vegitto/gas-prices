@@ -1,8 +1,20 @@
 {
-  "updatedAt": "05-Aug-2026 08:51 AM",
+  "updatedAt": "05-Aug-2026 05:02 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
+    {
+      "name": "Wawa",
+      "price": "$3.85",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
+    },
+    {
+      "name": "Gulf",
+      "price": "$3.85",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/33011"
+    },
     {
       "name": "BJs",
       "price": "$3.89",
@@ -49,12 +61,6 @@
       "name": "Wawa",
       "price": "$3.89",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
-    },
-    {
-      "name": "Wawa",
-      "price": "$3.89",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
     },
     {
@@ -62,12 +68,6 @@
       "price": "$3.89",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/41828"
-    },
-    {
-      "name": "Gulf",
-      "price": "$3.89",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/33011"
     },
     {
       "name": "Jollys",
