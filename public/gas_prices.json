@@ -1,5 +1,5 @@
 {
-  "updatedAt": "09-Aug-2026 07:26 AM",
+  "updatedAt": "09-Aug-2026 04:26 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -40,6 +40,12 @@
       "url": "https://www.gasbuddy.com/station/41828"
     },
     {
+      "name": "Gulf",
+      "price": "$3.75",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/33011"
+    },
+    {
       "name": "Raceway",
       "price": "$3.85",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
@@ -70,6 +76,12 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
+      "name": "Speedway",
+      "price": "$3.99",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
+    },
+    {
       "name": "Lukoil",
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
@@ -77,7 +89,7 @@
     },
     {
       "name": "Speedway",
-      "price": "$4.07",
+      "price": "$4.05",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/19659"
     },
@@ -88,22 +100,10 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
-      "name": "Speedway",
-      "price": "$4.19",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
-    },
-    {
       "name": "Raceway",
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
       "url": "https://www.gasbuddy.com/station/33823"
-    },
-    {
-      "name": "Gulf",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/33011"
     },
     {
       "name": "Jollys",
