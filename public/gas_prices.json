@@ -1,5 +1,5 @@
 {
-  "updatedAt": "12-Aug-2026 07:44 AM",
+  "updatedAt": "12-Aug-2026 04:38 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -88,16 +88,16 @@
       "url": "https://www.gasbuddy.com/station/19659"
     },
     {
+      "name": "Sheetz",
+      "price": "$3.99",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
+      "url": "https://www.gasbuddy.com/station/31735"
+    },
+    {
       "name": "Lukoil",
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
-    },
-    {
-      "name": "Sheetz",
-      "price": "$4.05",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
-      "url": "https://www.gasbuddy.com/station/31735"
     },
     {
       "name": "Racetrack",
