@@ -1,5 +1,5 @@
 {
-  "updatedAt": "15-Aug-2026 07:15 AM",
+  "updatedAt": "15-Aug-2026 04:17 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -14,18 +14,6 @@
       "price": "$3.75",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jacks.png",
       "url": "https://www.gasbuddy.com/station/33030"
-    },
-    {
-      "name": "Raceway",
-      "price": "$3.75",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
-      "url": "https://www.gasbuddy.com/station/33823"
-    },
-    {
-      "name": "Racetrack",
-      "price": "$3.75",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
-      "url": "https://www.gasbuddy.com/station/26764"
     },
     {
       "name": "Speedway",
@@ -62,6 +50,12 @@
       "price": "$3.79",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
+      "name": "Raceway",
+      "price": "$3.89",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
+      "url": "https://www.gasbuddy.com/station/33823"
     },
     {
       "name": "Raceway",
@@ -110,6 +104,12 @@
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
+    },
+    {
+      "name": "Racetrack",
+      "price": "N/A",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
+      "url": "https://www.gasbuddy.com/station/26764"
     }
   ]
 }
