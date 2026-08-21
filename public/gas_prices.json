@@ -1,5 +1,5 @@
 {
-  "updatedAt": "20-Aug-2026 04:22 PM",
+  "updatedAt": "21-Aug-2026 07:21 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -52,10 +52,10 @@
       "url": "https://www.gasbuddy.com/station/67982"
     },
     {
-      "name": "Wawa",
-      "price": "$3.79",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
+      "name": "Raceway",
+      "price": "$3.89",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
+      "url": "https://www.gasbuddy.com/station/33823"
     },
     {
       "name": "Wawa",
@@ -83,19 +83,19 @@
     },
     {
       "name": "Speedway",
-      "price": "$3.89",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
-    },
-    {
-      "name": "Speedway",
       "price": "$3.93",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/19659"
     },
     {
+      "name": "Wawa",
+      "price": "$3.99",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
+    },
+    {
       "name": "Sheetz",
-      "price": "$3.93",
+      "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
       "url": "https://www.gasbuddy.com/station/31735"
     },
@@ -106,10 +106,10 @@
       "url": "https://www.gasbuddy.com/station/7072"
     },
     {
-      "name": "Raceway",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
-      "url": "https://www.gasbuddy.com/station/33823"
+      "name": "Speedway",
+      "price": "$4.15",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
     }
   ]
 }
