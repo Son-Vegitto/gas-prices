@@ -1,14 +1,8 @@
 {
-  "updatedAt": "24-Aug-2026 04:24 PM",
+  "updatedAt": "25-Aug-2026 07:23 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
-    {
-      "name": "BJs",
-      "price": "$3.83",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
-      "url": "https://www.gasbuddy.com/station/26758"
-    },
     {
       "name": "Jacks",
       "price": "$3.89",
@@ -40,6 +34,18 @@
       "url": "https://www.gasbuddy.com/station/41828"
     },
     {
+      "name": "Gulf",
+      "price": "$3.89",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/33011"
+    },
+    {
+      "name": "BJs",
+      "price": "$3.91",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
+      "url": "https://www.gasbuddy.com/station/26758"
+    },
+    {
       "name": "Speedway",
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -50,12 +56,6 @@
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/33716"
-    },
-    {
-      "name": "Wawa",
-      "price": "$3.99",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
     },
     {
       "name": "Sheetz",
@@ -94,16 +94,16 @@
       "url": "https://www.gasbuddy.com/station/75991"
     },
     {
+      "name": "Wawa",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Racetrack",
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
       "url": "https://www.gasbuddy.com/station/26764"
-    },
-    {
-      "name": "Gulf",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/33011"
     },
     {
       "name": "Jollys",
