@@ -1,8 +1,14 @@
 {
-  "updatedAt": "25-Aug-2026 07:23 AM",
+  "updatedAt": "25-Aug-2026 04:23 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
+    {
+      "name": "Gulf",
+      "price": "$3.87",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/41828"
+    },
     {
       "name": "Jacks",
       "price": "$3.89",
@@ -28,10 +34,10 @@
       "url": "https://www.gasbuddy.com/station/33714"
     },
     {
-      "name": "Gulf",
+      "name": "Speedway",
       "price": "$3.89",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/41828"
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/33716"
     },
     {
       "name": "Gulf",
@@ -52,18 +58,6 @@
       "url": "https://www.gasbuddy.com/station/19659"
     },
     {
-      "name": "Speedway",
-      "price": "$3.99",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/33716"
-    },
-    {
-      "name": "Sheetz",
-      "price": "$3.99",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
-      "url": "https://www.gasbuddy.com/station/31735"
-    },
-    {
       "name": "Taylor",
       "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
@@ -77,7 +71,7 @@
     },
     {
       "name": "Lukoil",
-      "price": "$3.99",
+      "price": "$4.09",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
     },
@@ -98,6 +92,12 @@
       "price": "$4.19",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
+      "name": "Sheetz",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
+      "url": "https://www.gasbuddy.com/station/31735"
     },
     {
       "name": "Racetrack",
