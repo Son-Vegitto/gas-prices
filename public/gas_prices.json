@@ -1,5 +1,5 @@
 {
-  "updatedAt": "07-Sep-2026 12:17 PM",
+  "updatedAt": "07-Sep-2026 06:28 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -26,12 +26,6 @@
       "price": "$4.07",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
       "url": "https://www.gasbuddy.com/station/208024"
-    },
-    {
-      "name": "Jacks",
-      "price": "$4.09",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jacks.png",
-      "url": "https://www.gasbuddy.com/station/33030"
     },
     {
       "name": "Racetrack",
@@ -85,6 +79,12 @@
       "name": "Wawa",
       "price": "$4.39",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/210827"
+    },
+    {
+      "name": "Wawa",
+      "price": "$4.39",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
       "url": "https://www.gasbuddy.com/station/75991"
     },
     {
@@ -100,16 +100,16 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
+      "name": "Jacks",
+      "price": "N/A",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jacks.png",
+      "url": "https://www.gasbuddy.com/station/33030"
+    },
+    {
       "name": "Racetrack",
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
       "url": "https://www.gasbuddy.com/station/26764"
-    },
-    {
-      "name": "Wawa",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/210827"
     }
   ]
 }
