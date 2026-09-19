@@ -1,5 +1,5 @@
 {
-  "updatedAt": "19-Sep-2026 10:07 AM",
+  "updatedAt": "19-Sep-2026 06:02 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -47,7 +47,7 @@
     },
     {
       "name": "Jollys",
-      "price": "$4.25",
+      "price": "$4.30",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
       "url": "https://www.gasbuddy.com/station/33913"
     },
