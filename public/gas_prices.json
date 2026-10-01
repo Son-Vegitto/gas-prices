@@ -1,8 +1,14 @@
 {
-  "updatedAt": "30-Sep-2026 07:25 PM",
+  "updatedAt": "01-Oct-2026 01:16 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
+    {
+      "name": "BJs",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
+      "url": "https://www.gasbuddy.com/station/26758"
+    },
     {
       "name": "Jacks",
       "price": "$4.19",
@@ -16,16 +22,28 @@
       "url": "https://www.gasbuddy.com/station/33823"
     },
     {
+      "name": "Raceway",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
+      "url": "https://www.gasbuddy.com/station/208024"
+    },
+    {
+      "name": "Racetrack",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
+      "url": "https://www.gasbuddy.com/station/26764"
+    },
+    {
       "name": "Gulf",
       "price": "$4.19",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/41828"
     },
     {
-      "name": "Raceway",
-      "price": "$4.23",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
-      "url": "https://www.gasbuddy.com/station/208024"
+      "name": "Jollys",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
+      "url": "https://www.gasbuddy.com/station/33913"
     },
     {
       "name": "Racetrack",
@@ -76,12 +94,6 @@
       "url": "https://www.gasbuddy.com/station/31737"
     },
     {
-      "name": "Wawa",
-      "price": "$4.39",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/210827"
-    },
-    {
       "name": "Speedway",
       "price": "$4.39",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -94,22 +106,10 @@
       "url": "https://www.gasbuddy.com/station/7072"
     },
     {
-      "name": "BJs",
+      "name": "Wawa",
       "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
-      "url": "https://www.gasbuddy.com/station/26758"
-    },
-    {
-      "name": "Racetrack",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
-      "url": "https://www.gasbuddy.com/station/26764"
-    },
-    {
-      "name": "Jollys",
-      "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
-      "url": "https://www.gasbuddy.com/station/33913"
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/210827"
     }
   ]
 }
