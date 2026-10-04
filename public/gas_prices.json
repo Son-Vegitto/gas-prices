@@ -1,8 +1,14 @@
 {
-  "updatedAt": "04-Oct-2026 11:39 AM",
+  "updatedAt": "04-Oct-2026 06:42 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
+    {
+      "name": "Wawa",
+      "price": "$4.16",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
+    },
     {
       "name": "BJs",
       "price": "$4.19",
@@ -40,6 +46,12 @@
       "url": "https://www.gasbuddy.com/station/33716"
     },
     {
+      "name": "Wawa",
+      "price": "$4.19",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Gulf",
       "price": "$4.19",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
@@ -47,27 +59,15 @@
     },
     {
       "name": "Wawa",
-      "price": "$4.23",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
-    },
-    {
-      "name": "Wawa",
       "price": "$4.25",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
+      "url": "https://www.gasbuddy.com/station/210827"
     },
     {
       "name": "Sheetz",
       "price": "$4.26",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
       "url": "https://www.gasbuddy.com/station/31735"
-    },
-    {
-      "name": "Wawa",
-      "price": "$4.27",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/210827"
     },
     {
       "name": "Speedway",
