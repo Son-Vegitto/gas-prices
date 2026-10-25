@@ -1,8 +1,14 @@
 {
-  "updatedAt": "24-Oct-2026 06:14 PM",
+  "updatedAt": "25-Oct-2026 10:45 AM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
+    {
+      "name": "BJs",
+      "price": "$4.09",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
+      "url": "https://www.gasbuddy.com/station/26758"
+    },
     {
       "name": "Jacks",
       "price": "$4.09",
@@ -52,12 +58,6 @@
       "url": "https://www.gasbuddy.com/station/33011"
     },
     {
-      "name": "Jollys",
-      "price": "$4.09",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
-      "url": "https://www.gasbuddy.com/station/33913"
-    },
-    {
       "name": "Speedway",
       "price": "$4.19",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
@@ -88,16 +88,16 @@
       "url": "https://www.gasbuddy.com/station/67982"
     },
     {
+      "name": "Wawa",
+      "price": "$4.36",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
+    },
+    {
       "name": "Sheetz",
       "price": "$4.39",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/sheetz.png",
       "url": "https://www.gasbuddy.com/station/31735"
-    },
-    {
-      "name": "Wawa",
-      "price": "$4.45",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
     },
     {
       "name": "Wawa",
@@ -106,10 +106,10 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
-      "name": "BJs",
+      "name": "Jollys",
       "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
-      "url": "https://www.gasbuddy.com/station/26758"
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
+      "url": "https://www.gasbuddy.com/station/33913"
     }
   ]
 }
