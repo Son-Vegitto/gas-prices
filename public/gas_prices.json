@@ -1,11 +1,11 @@
 {
-  "updatedAt": "31-Oct-2026 12:00 PM",
+  "updatedAt": "31-Oct-2026 07:00 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
     {
       "name": "BJs",
-      "price": "$4.07",
+      "price": "$4.03",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
       "url": "https://www.gasbuddy.com/station/26758"
     },
@@ -52,16 +52,16 @@
       "url": "https://www.gasbuddy.com/station/33011"
     },
     {
-      "name": "Jollys",
-      "price": "$4.09",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
-      "url": "https://www.gasbuddy.com/station/33913"
-    },
-    {
       "name": "Speedway",
       "price": "$4.19",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/16010"
+    },
+    {
+      "name": "Taylor",
+      "price": "$4.29",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
+      "url": "https://www.gasbuddy.com/station/31737"
     },
     {
       "name": "Lukoil",
@@ -106,10 +106,10 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
-      "name": "Taylor",
+      "name": "Jollys",
       "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
-      "url": "https://www.gasbuddy.com/station/31737"
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
+      "url": "https://www.gasbuddy.com/station/33913"
     }
   ]
 }
