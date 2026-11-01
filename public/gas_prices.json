@@ -1,5 +1,5 @@
 {
-  "updatedAt": "31-Oct-2026 07:00 PM",
+  "updatedAt": "01-Nov-2026 01:02 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -22,10 +22,10 @@
       "url": "https://www.gasbuddy.com/station/33823"
     },
     {
-      "name": "Racetrack",
+      "name": "Raceway",
       "price": "$4.09",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
-      "url": "https://www.gasbuddy.com/station/26764"
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
+      "url": "https://www.gasbuddy.com/station/208024"
     },
     {
       "name": "Racetrack",
@@ -50,12 +50,6 @@
       "price": "$4.09",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/33011"
-    },
-    {
-      "name": "Speedway",
-      "price": "$4.19",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
-      "url": "https://www.gasbuddy.com/station/16010"
     },
     {
       "name": "Taylor",
@@ -94,10 +88,10 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
-      "name": "Raceway",
+      "name": "Racetrack",
       "price": "N/A",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
-      "url": "https://www.gasbuddy.com/station/208024"
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/racetrack.png",
+      "url": "https://www.gasbuddy.com/station/26764"
     },
     {
       "name": "Sheetz",
@@ -110,6 +104,12 @@
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
       "url": "https://www.gasbuddy.com/station/33913"
+    },
+    {
+      "name": "Speedway",
+      "price": "N/A",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
+      "url": "https://www.gasbuddy.com/station/16010"
     }
   ]
 }
