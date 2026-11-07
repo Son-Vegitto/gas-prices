@@ -1,5 +1,5 @@
 {
-  "updatedAt": "07-Nov-2026 12:45 PM",
+  "updatedAt": "07-Nov-2026 07:22 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -59,7 +59,7 @@
     },
     {
       "name": "Speedway",
-      "price": "$4.09",
+      "price": "$3.99",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/speedway.png",
       "url": "https://www.gasbuddy.com/station/16010"
     },
@@ -100,16 +100,16 @@
       "url": "https://www.gasbuddy.com/station/210827"
     },
     {
-      "name": "Wawa",
-      "price": "$4.39",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/75991"
-    },
-    {
       "name": "Raceway",
       "price": "N/A",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/raceway.png",
       "url": "https://www.gasbuddy.com/station/33823"
+    },
+    {
+      "name": "Wawa",
+      "price": "N/A",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/75991"
     }
   ]
 }
