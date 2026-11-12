@@ -1,5 +1,5 @@
 {
-  "updatedAt": "11-Nov-2026 02:18 PM",
+  "updatedAt": "11-Nov-2026 09:48 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
@@ -34,6 +34,12 @@
       "url": "https://www.gasbuddy.com/station/33714"
     },
     {
+      "name": "Gulf",
+      "price": "$3.83",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
+      "url": "https://www.gasbuddy.com/station/41828"
+    },
+    {
       "name": "Jollys",
       "price": "$3.83",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/jollys.png",
@@ -55,12 +61,6 @@
       "name": "Gulf",
       "price": "$3.89",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
-      "url": "https://www.gasbuddy.com/station/41828"
-    },
-    {
-      "name": "Gulf",
-      "price": "$3.89",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/33011"
     },
     {
@@ -71,7 +71,7 @@
     },
     {
       "name": "Lukoil",
-      "price": "$4.09",
+      "price": "$4.05",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/lukoil.png",
       "url": "https://www.gasbuddy.com/station/7072"
     },
@@ -88,16 +88,16 @@
       "url": "https://www.gasbuddy.com/station/31735"
     },
     {
+      "name": "Wawa",
+      "price": "$4.29",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
+      "url": "https://www.gasbuddy.com/station/67982"
+    },
+    {
       "name": "Taylor",
       "price": "$4.29",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/taylor.png",
       "url": "https://www.gasbuddy.com/station/31737"
-    },
-    {
-      "name": "Wawa",
-      "price": "$4.35",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/wawa.png",
-      "url": "https://www.gasbuddy.com/station/67982"
     },
     {
       "name": "Wawa",
