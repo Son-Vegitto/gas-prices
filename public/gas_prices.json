@@ -1,8 +1,14 @@
 {
-  "updatedAt": "18-Nov-2026 11:31 AM",
+  "updatedAt": "18-Nov-2026 03:15 PM",
   "source": "GasBuddy",
   "isLiveData": true,
   "rows": [
+    {
+      "name": "BJs",
+      "price": "$3.55",
+      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
+      "url": "https://www.gasbuddy.com/station/26758"
+    },
     {
       "name": "Jacks",
       "price": "$3.65",
@@ -32,12 +38,6 @@
       "price": "$3.65",
       "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/gulf.png",
       "url": "https://www.gasbuddy.com/station/41828"
-    },
-    {
-      "name": "BJs",
-      "price": "$3.67",
-      "logo": "https://raw.githubusercontent.com/Son-Vegitto/gas-prices/main/logos/bjs.png",
-      "url": "https://www.gasbuddy.com/station/26758"
     },
     {
       "name": "Raceway",
